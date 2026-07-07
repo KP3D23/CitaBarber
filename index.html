@@ -3,246 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cita-Barber | Sistema de Agendamiento</title>
+    <title>Sistema de Barbería</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="phone-container">
-        
-        <header class="app-header" id="global-header">
-            <div class="header-top">
-                <div class="logo-placeholder">💈</div>
-                <button id="btn-admin-panel" class="btn-sm-admin">Propietarios 🏢</button>
-            </div>
-            <h1>Cita-Barber</h1>
-            <p id="app-subtitle">Tu turno en un clic</p>
+    <div id="screen-home" class="app-screen">
+        <header>
+            <div class="logo">💈 Cita-Barber</div>
+            <button id="btn-admin-panel" class="btn-text">Propietarios 🏢</button>
         </header>
+        <main class="home-main">
+            <div class="hero-card">
+                <h1>Tu turno en un clic</h1>
+                <p>Reserva tu espacio sin hacer filas.</p>
+                <button id="btn-start-booking" class="btn-primary-large">Agendar Turno Ahora</button>
+            </div>
+        </main>
+    </div>
 
-        <main id="main-content">
+    <div id="screen-admin-register" class="app-screen" style="display:none;">
+        <div class="admin-tabs">
+            <button id="tab-login-btn" class="active">Iniciar Sesión</button>
+            <button id="tab-register-btn">Registrar Local</button>
+        </div>
 
-            <section id="screen-home" class="app-screen">
-                <div class="card cover-card">
-                    <div class="barber-shop-photo">
-                        <img src="https://placehold.co/400x220/1e1e1e/d4af37/png?text=Barberia+Unellez+Premium" alt="Foto del Local" class="img-responsive">
-                    </div>
-                    <h2 class="shop-name">Barbería Unellez Premium</h2>
-                    <p class="shop-direction">📍 Av. 23 de Enero, CC. El Dorado, Local 4, Barinas.</p>
-                    <p class="shop-schedule">🕒 Horario: Lun a Sáb - 9:00 AM a 7:00 PM</p>
-                    
-                    <button class="btn-primary" id="btn-start-booking" style="margin-top: 20px;">
-                        Ver Barberos y Agendar Turno
-                    </button>
+        <div id="tab-login-content" class="tab-content">
+            <form id="admin-login-form">
+                <input type="text" id="login-user" placeholder="Usuario" required>
+                <input type="password" id="login-pass" placeholder="Contraseña" required>
+                <button type="submit" class="btn-primary">Entrar al Panel</button>
+                <button type="button" id="btn-cancel-admin" class="btn-secondary">Volver al Inicio</button>
+            </form>
+        </div>
+
+        <div id="tab-register-content" class="tab-content" style="display:none;">
+            <form id="admin-shop-form">
+                <h3>Datos del Local</h3>
+                <input type="text" id="shop-reg-name" placeholder="Nombre de la Barbería" required>
+                <input type="text" id="shop-reg-dir" placeholder="Dirección" required>
+                <input type="text" id="admin-user" placeholder="Crea un Usuario" required>
+                <input type="password" id="admin-pass" placeholder="Crea una Contraseña" required>
+                
+                <h3>Horarios Staff (Barbero 1)</h3>
+                <input type="text" id="b1-name" placeholder="Nombre Barbero 1" required>
+                <div class="time-group">
+                    <label>Apertura:</label>
+                    <input type="time" id="b1-start" value="09:00" required>
+                    <label>Cierre:</label>
+                    <input type="time" id="b1-end" value="18:00" required>
                 </div>
+
+                <h3>Horarios Staff (Barbero 2)</h3>
+                <input type="text" id="b2-name" placeholder="Nombre Barbero 2" required>
+                <div class="time-group">
+                    <label>Apertura:</label>
+                    <input type="time" id="b2-start" value="09:00" required>
+                    <label>Cierre:</label>
+                    <input type="time" id="b2-end" value="18:00" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">Dar de Alta Plataforma</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="screen-admin-dashboard" class="app-screen" style="display:none;">
+        <header>
+            <h2 id="dashboard-shop-name">Panel de Control</h2>
+            <button id="btn-logout" class="btn-text">Salir 🚪</button>
+        </header>
+        <main style="padding: 20px;">
+            
+            <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px;">
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de Hoy</h3>
+                <div id="dashboard-today-list">
+                    </div>
             </section>
 
-            <section id="screen-barbers-calendar" class="app-screen" style="display: none;">
-                <div class="card">
-                    <h2>1. Selecciona tu Barbero</h2>
-                    <p class="instructions">Cada profesional cuenta con su propio horario flexible.</p>
-                    
-                    <div class="barbers-grid" id="barbers-container">
-                        </div>
-
-                    <h2 style="margin-top: 20px;">2. Selecciona Fecha y Hora</h2>
-                    
-                    <div class="calendar-box">
-                        <div class="calendar-header">
-                            <button type="button" id="prev-month">◀</button>
-                            <span id="month-year-title">Junio 2026</span>
-                            <button type="button" id="next-month">▶</button>
-                        </div>
-                        <div class="calendar-weekdays">
-                            <div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div><div>Do</div>
-                        </div>
-                        <div class="calendar-days" id="calendar-days-grid"></div>
+            <section class="section-block" style="margin-top: 20px; background: #f9f9f9; border-radius: 8px;">
+                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial (Últimos 3 días)</h3>
+                <div id="dashboard-past-list">
                     </div>
-
-                    <div class="hours-section">
-                        <label class="section-label">Horas Disponibles</label>
-                        <div class="hours-grid" id="hours-grid-container"></div>
-                    </div>
-
-                    <div class="button-actions" style="margin-top: 20px;">
-                        <button type="button" class="btn-secondary" id="btn-back-to-home">Atrás</button>
-                        <button type="button" class="btn-primary" id="btn-go-to-auth-pay">Continuar</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="screen-auth-payment" class="app-screen" style="display: none;">
-                <div class="card">
-                    <h2>Confirmación y Registro</h2>
-                    <p class="instructions">Introduce tus datos básicos para apartar tu cupo en la agenda.</p>
-
-                    <div class="ticket-summary">
-                        <p><strong>Barbero:</strong> <span id="summary-barber">-</span></p>
-                        <p><strong>Fecha:</strong> <span id="summary-date">-</span></p>
-                        <p><strong>Hora:</strong> <span id="summary-hour">-</span></p>
-                    </div>
-
-                    <form id="final-booking-form">
-                        <div class="form-group">
-                            <label for="client-cedula">Cédula de Identidad</label>
-                            <input type="text" id="client-cedula" placeholder="Ej. V-23456789" required>
-                        </div>
-
-                        <div id="conditional-fields">
-                            <div class="form-group">
-                                <label for="client-name">Nombre</label>
-                                <input type="text" id="client-name" placeholder="Tu Nombre">
-                            </div>
-                            <div class="form-group">
-                                <label for="client-lastname">Apellido</label>
-                                <input type="text" id="client-lastname" placeholder="Tu Apellido">
-                            </div>
-                            <div class="form-group">
-                                <label for="client-phone">Número de Teléfono</label>
-                                <input type="text" id="client-phone" placeholder="Ej. 04141234567">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label>Método de Pago</label>
-                            <div class="radio-group">
-                                <label><input type="radio" name="pay-method" value="sitio" checked> Pago directo en el sitio</label>
-                                <label><input type="radio" name="pay-method" value="movil"> Pago Móvil previo</label>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="reference-group" style="display: none;">
-                            <label for="pay-reference">Últimos 4 dígitos del Pago Móvil</label>
-                            <input type="text" id="pay-reference" placeholder="Ej. 8541" maxlength="4">
-                        </div>
-
-                        <div class="button-actions" style="margin-top: 25px;">
-                            <button type="button" class="btn-secondary" id="btn-back-to-calendar">Atrás</button>
-                            <button type="submit" class="btn-primary" id="btn-confirm-booking">Apartar Mi Hora</button>
-                        </div>
-                    </form>
-                </div>
-            </section>
-
-            <section id="screen-admin-register" class="app-screen" style="display: none;">
-                <div class="card">
-                    <div class="tab-header">
-                        <button type="button" class="tab-btn active" id="tab-login-btn">Iniciar Sesión</button>
-                        <button type="button" class="tab-btn" id="tab-register-btn">Registrar Local</button>
-                    </div>
-
-                    <div id="tab-login-content">
-                        <form id="admin-login-form" style="margin-top: 15px;">
-                            <div class="form-group">
-                                <label for="login-user">Usuario Propietario</label>
-                                <input type="text" id="login-user" placeholder="Usuario" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="login-pass">Contraseña</label>
-                                <input type="password" id="login-pass" placeholder="••••••••" required>
-                            </div>
-                            <button type="submit" class="btn-primary" style="margin-top: 15px;">Acceder al Panel</button>
-                        </form>
-                    </div>
-
-                    <div id="tab-register-content" style="display: none;">
-                        <form id="admin-shop-form" style="margin-top: 15px;">
-                            <p class="section-subtitle">Datos Comerciales</p>
-                            <div class="form-group">
-                                <label for="shop-reg-name">Nombre de la Barbería</label>
-                                <input type="text" id="shop-reg-name" placeholder="Ej. Barbería Central" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="shop-reg-dir">Dirección Física</label>
-                                <input type="text" id="shop-reg-dir" placeholder="Ej. Av. Hurtado" required>
-                            </div>
-
-                            <hr class="form-divider">
-                            <p class="section-subtitle">Configuración del Staff</p>
-                            
-                            <div class="barber-input-block">
-                                <div class="form-group">
-                                    <label>Nombre Barbero 1</label>
-                                    <input type="text" id="b1-name" placeholder="Ej. Franco" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Horario Barbero 1</label>
-                                    <input type="text" id="b1-hours" placeholder="Ej. 9:00 AM a 7:00 PM" required>
-                                </div>
-                            </div>
-
-                            <div class="barber-input-block" style="margin-top: 10px;">
-                                <div class="form-group">
-                                    <label>Nombre Barbero 2</label>
-                                    <input type="text" id="b2-name" placeholder="Ej. Wilbert" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Horario Barbero 2</label>
-                                    <input type="text" id="b2-hours" placeholder="Ej. 9:00 AM a 1:00 PM" required>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn-primary" style="margin-top: 20px;">Dar de Alta Plataforma</button>
-                        </form>
-                    </div>
-
-                    <button type="button" class="btn-secondary" id="btn-cancel-admin" style="margin-top: 15px;">Volver al Inicio</button>
-                </div>
-            </section>
-
-            <section id="screen-ticket-receipt" class="app-screen" style="display: none;">
-                <div class="receipt-container">
-                    <div class="receipt-border-top"></div>
-                    <div class="receipt-card">
-                        <div class="receipt-header">
-                            <span class="receipt-logo">💈</span>
-                            <h2>COMPROBANTE DE TURNO</h2>
-                            <p>Cita-Barber Platform</p>
-                        </div>
-                        
-                        <div class="receipt-divider-dash"></div>
-                        
-                        <div class="receipt-body">
-                            <div class="receipt-row">
-                                <span>Establecimiento:</span>
-                                <strong id="rec-shop">Barbería Unellez</strong>
-                            </div>
-                            <div class="receipt-row">
-                                <span>Especialista:</span>
-                                <strong id="rec-barber">-</strong>
-                            </div>
-                            <div class="receipt-row">
-                                <span>Fecha Reservada:</span>
-                                <strong id="rec-date">-</strong>
-                            </div>
-                            <div class="receipt-row">
-                                <span>Bloque Asignado:</span>
-                                <strong id="rec-hour">-</strong>
-                            </div>
-                            <div class="receipt-row">
-                                <span>Cliente (CI):</span>
-                                <strong id="rec-client">-</strong>
-                            </div>
-                            <div class="receipt-row">
-                                <span>Método de Pago:</span>
-                                <strong id="rec-payment">-</strong>
-                            </div>
-                        </div>
-                        
-                        <div class="receipt-divider-dash"></div>
-                        
-                        <div class="barcode-wrapper">
-                            <div class="barcode-lines"></div>
-                            <small id="rec-uuid">CB-2026-9941</small>
-                        </div>
-                    </div>
-                    
-                    <button type="button" class="btn-primary" id="btn-receipt-finish" style="margin-top: 20px;">
-                        Listo, Volver al Inicio
-                    </button>
-                </div>
             </section>
 
         </main>
+    </div>
+
+    <div id="screen-barbers-calendar" class="app-screen" style="display:none;">
+        <header>
+            <button id="btn-back-to-home" class="btn-back">← Volver</button>
+            <h2>Selecciona tu Turno</h2>
+        </header>
+        
+        <section class="section-block">
+            <h3>1. Elige tu Profesional</h3>
+            <div id="barbers-container" class="horizontal-scroll">
+                </div>
+        </section>
+
+        <section class="section-block">
+            <h3>2. Elige el Día</h3>
+            <div class="calendar-header">
+                <button id="prev-month">❮</button>
+                <span id="month-year-title">Mes Año</span>
+                <button id="next-month">❯</button>
+            </div>
+            <div class="calendar-days-grid" id="calendar-days-grid">
+                </div>
+        </section>
+
+        <section class="section-block">
+            <h3>3. Elige la Hora</h3>
+            <div class="hours-grid" id="hours-grid-container">
+                <p class="text-muted">Selecciona un día primero.</p>
+            </div>
+        </section>
+
+        <div class="fixed-bottom-bar">
+            <button id="btn-go-to-auth-pay" class="btn-primary-large">Continuar</button>
+        </div>
+    </div>
+
+    <div id="screen-auth-payment" class="app-screen" style="display:none;">
+        <header>
+            <button id="btn-back-to-calendar" class="btn-back">← Modificar</button>
+            <h2>Confirma tu Reserva</h2>
+        </header>
+
+        <div class="summary-card">
+            <p><strong>Barbero:</strong> <span id="summary-barber"></span></p>
+            <p><strong>Fecha:</strong> <span id="summary-date"></span></p>
+            <p><strong>Hora:</strong> <span id="summary-hour"></span></p>
+        </div>
+
+        <form id="final-booking-form">
+            <section class="section-block">
+                <h3>Tus Datos</h3>
+                <input type="number" id="client-cedula" placeholder="Cédula de Identidad" required>
+                <div id="conditional-fields">
+                    <input type="text" id="client-name" placeholder="Nombre" required>
+                    <input type="text" id="client-lastname" placeholder="Apellido" required>
+                    <input type="tel" id="client-phone" placeholder="Teléfono" required>
+                </div>
+            </section>
+
+            <section class="section-block">
+                <h3>Método de Pago</h3>
+                <label><input type="radio" name="pay-method" value="sitio" checked> Pago en el Local</label><br>
+                <label><input type="radio" name="pay-method" value="movil"> Pago Móvil</label>
+                <div id="reference-group" style="display:none; margin-top:10px;">
+                    <input type="text" id="pay-reference" placeholder="Últimos 4 dígitos de referencia">
+                </div>
+            </section>
+
+            <button type="submit" class="btn-primary-large" style="margin-top:20px;">Confirmar Cita</button>
+        </form>
+    </div>
+
+    <div id="screen-ticket-receipt" class="app-screen" style="display:none; padding:20px;">
+        <div class="ticket-container">
+            <h2>¡Cita Confirmada!</h2>
+            <div class="ticket-details">
+                <p><strong>Ticket ID:</strong> <span id="rec-uuid"></span></p>
+                <p><strong>Cliente C.I:</strong> <span id="rec-client"></span></p>
+                <p><strong>Barbero:</strong> <span id="rec-barber"></span></p>
+                <p><strong>Fecha:</strong> <span id="rec-date"></span></p>
+                <p><strong>Hora:</strong> <span id="rec-hour"></span></p>
+                <p><strong>Pago:</strong> <span id="rec-payment"></span></p>
+            </div>
+            <button id="btn-receipt-finish" class="btn-primary-large" style="margin-top:20px;">Finalizar</button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
