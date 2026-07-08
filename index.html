@@ -14,16 +14,11 @@
             <button id="btn-admin-panel" class="btn-text">Propietarios 🏢</button>
         </header>
         <main class="home-main">
-           <div class="hero-card">
-                <h1 id="home-shop-name" style="color: gold; margin-bottom: 10px;">Cargando local...</h1>
-                <p id="home-shop-dir" style="font-size: 0.9rem; margin-bottom: 5px;">📍 Buscando ubicación...</p>
-                <p id="home-shop-hours" style="font-size: 0.9rem; margin-bottom: 20px;">🕒 Consultando horario...</p>
-                
-                <hr style="border-color: #444; margin-bottom: 20px;">
-                
-                <h2>Tu turno en un clic</h2>
-                <p>Reserva tu espacio sin hacer filas.</p>
-                <button id="btn-start-booking" class="btn-primary-large">Ver Barberos y Agendar Turno</button>
+            <h2 style="color: #1a1a24; margin-bottom: 5px;">¿Dónde te vas a cortar hoy?</h2>
+            <p style="margin-bottom: 25px; color: #666;">Selecciona tu local de preferencia</p>
+            
+            <div id="shop-list-container" style="display:flex; flex-direction:column; gap:15px;">
+                <p>Cargando locales disponibles...</p>
             </div>
         </main>
     </div>
@@ -80,19 +75,14 @@
             <button id="btn-logout" class="btn-text">Salir 🚪</button>
         </header>
         <main style="padding: 20px;">
-            
             <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px;">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de Hoy</h3>
-                <div id="dashboard-today-list">
-                    </div>
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de Hoy / Pendientes</h3>
+                <div id="dashboard-today-list"></div>
             </section>
-
             <section class="section-block" style="margin-top: 20px; background: #f9f9f9; border-radius: 8px;">
                 <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial (Últimos 3 días)</h3>
-                <div id="dashboard-past-list">
-                    </div>
+                <div id="dashboard-past-list"></div>
             </section>
-
         </main>
     </div>
 
@@ -101,13 +91,10 @@
             <button id="btn-back-to-home" class="btn-back">← Volver</button>
             <h2>Selecciona tu Turno</h2>
         </header>
-        
         <section class="section-block">
             <h3>1. Elige tu Profesional</h3>
-            <div id="barbers-container" class="horizontal-scroll">
-                </div>
+            <div id="barbers-container" class="horizontal-scroll"></div>
         </section>
-
         <section class="section-block">
             <h3>2. Elige el Día</h3>
             <div class="calendar-header">
@@ -115,17 +102,14 @@
                 <span id="month-year-title">Mes Año</span>
                 <button id="next-month">❯</button>
             </div>
-            <div class="calendar-days-grid" id="calendar-days-grid">
-                </div>
+            <div class="calendar-days-grid" id="calendar-days-grid"></div>
         </section>
-
         <section class="section-block">
             <h3>3. Elige la Hora</h3>
             <div class="hours-grid" id="hours-grid-container">
                 <p class="text-muted">Selecciona un día primero.</p>
             </div>
         </section>
-
         <div class="fixed-bottom-bar">
             <button id="btn-go-to-auth-pay" class="btn-primary-large">Continuar</button>
         </div>
@@ -136,13 +120,11 @@
             <button id="btn-back-to-calendar" class="btn-back">← Modificar</button>
             <h2>Confirma tu Reserva</h2>
         </header>
-
         <div class="summary-card">
             <p><strong>Barbero:</strong> <span id="summary-barber"></span></p>
             <p><strong>Fecha:</strong> <span id="summary-date"></span></p>
             <p><strong>Hora:</strong> <span id="summary-hour"></span></p>
         </div>
-
         <form id="final-booking-form">
             <section class="section-block">
                 <h3>Tus Datos</h3>
@@ -153,7 +135,6 @@
                     <input type="tel" id="client-phone" placeholder="Teléfono" required>
                 </div>
             </section>
-
             <section class="section-block">
                 <h3>Método de Pago</h3>
                 <label><input type="radio" name="pay-method" value="sitio" checked> Pago en el Local</label><br>
@@ -162,7 +143,6 @@
                     <input type="text" id="pay-reference" placeholder="Últimos 4 dígitos de referencia">
                 </div>
             </section>
-
             <button type="submit" class="btn-primary-large" style="margin-top:20px;">Confirmar Cita</button>
         </form>
     </div>
