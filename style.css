@@ -1,211 +1,84 @@
-:root {
-    --bg-dark: #121212;
-    --card-bg: #1e1e1e;
-    --primary-color: #d4af37; /* Dorado clásico de barbería */
-    --text-main: #ffffff;
-    --text-muted: #a0a0a0;
-    --input-bg: #2d2d2d;
-    --border-color: #333333;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f4f4f9; color: #333; }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+/* Contenedor Principal (Simulación de Teléfono) */
+.app-screen { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
 
-body {
-    background-color: #2a2a2a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
+/* Cabeceras y Botones Superiores */
+header { background: #1a1a24; color: gold; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+header h2 { font-size: 1.2rem; color: #fff; } 
+.logo { font-size: 1.2rem; font-weight: bold; }
+.btn-text, .btn-back { background: none; border: none; color: gold; font-weight: bold; cursor: pointer; font-size: 1rem; }
 
-/* ==========================================================================
-   1. ESTRUCTURA PRINCIPAL (MOCKUP DEL TELÉFONO)
-   ========================================================================== */
-.phone-container {
-    background-color: var(--bg-dark);
-    width: 100%;
-    max-width: 410px;
-    height: 100vh;
-    max-height: 840px;
-    display: flex; /* Asegura el orden vertical */
-    flex-direction: column;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    position: relative;
-}
+/* Pantalla de Inicio */
+.home-main { padding: 40px 20px; text-align: center; }
+.hero-card { background: #1a1a24; color: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border: 1px solid gold; margin-top: 20px; }
 
-@media (max-width: 480px) {
-    .phone-container {
-        max-width: 100%;
-        height: 100vh;
-        max-height: 100%;
-        border-radius: 0;
-    }
-}
+/* Botones Generales */
+.btn-primary, .btn-primary-large { background: gold; color: #111; border: none; padding: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-size: 1rem; transition: background 0.3s; }
+.btn-primary:hover, .btn-primary-large:hover { background: #ffd700; }
+.btn-secondary { background: transparent; color: #333; border: 1px solid #ccc; padding: 14px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; }
 
-.app-header {
-    background-color: var(--card-bg);
-    padding: 15px 20px;
-    text-align: center;
-    border-bottom: 2px solid var(--primary-color);
-    flex-shrink: 0; /* Evita que el header se aplaste */
-}
+/* Pestañas Admin */
+.admin-tabs { display: flex; margin-bottom: 10px; background: #eee; }
+.admin-tabs button { flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #666; transition: 0.3s; }
+.admin-tabs button.active { background: #fff; border-bottom: 3px solid gold; color: #1a1a24; }
+.tab-content, .section-block { padding: 20px; }
 
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
+/* Formularios y Selectores de Tiempo */
+input[type="text"], input[type="password"], input[type="number"], input[type="tel"] { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
+h3 { margin-top: 10px; margin-bottom: 10px; color: #1a1a24; font-size: 1.1rem; }
+.time-group { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
+.time-group label { font-size: 0.9rem; font-weight: bold; color: #555; }
+input[type="time"] { padding: 10px; border: 1px solid #ddd; border-radius: 6px; flex: 1; font-size: 1rem; }
 
-.logo-placeholder {
-    font-size: 2rem;
-    animation: spin 12s linear infinite;
-}
+/* Barberos (Scroll Horizontal) */
+.horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+.barber-card { min-width: 100px; text-align: center; border: 2px solid #eee; padding: 15px 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; background: #fafafa; }
+.barber-card .avatar { margin-bottom: 8px; width: 60px; height: 60px; margin-left: auto; margin-right: auto; background: #eee; border-radius: 50%; padding: 5px; }
+.barber-card span { font-weight: bold; font-size: 0.9rem; display: block; }
+.barber-card.active { border-color: gold; background: #fffdf5; box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2); transform: translateY(-2px); }
 
-.app-header h1 { color: var(--primary-color); font-size: 1.5rem; font-weight: 700; }
-.app-header p { color: var(--text-muted); font-size: 0.8rem; }
+/* Calendario */
+.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
+.calendar-header button { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px 10px; }
+.calendar-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+.calendar-days-grid div { padding: 12px 0; border-radius: 8px; font-size: 0.95rem; transition: 0.2s; }
+.day-off { color: #ccc; text-decoration: line-through; cursor: not-allowed; }
+.day-normal { background: #f9f9f9; cursor: pointer; border: 1px solid #eee; }
+.day-normal:hover { background: #f0f0f0; }
+.day-today { border: 2px solid gold; font-weight: bold; color: #1a1a24; }
+.day-active { background: #1a1a24 !important; color: gold !important; border-color: #1a1a24 !important; font-weight: bold; }
 
-#main-content {
-    flex: 1; /* Ocupa todo el espacio restante debajo del header */
-    padding: 15px;
-    overflow-y: auto;
-    display: block;
-}
+/* Grilla de Horas */
+.hours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.hour-btn { padding: 12px 5px; border: 1px solid #ddd; background: #fff; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
+.hour-btn.available:hover { border-color: gold; background: #fffdf5; }
+.hour-btn.current-select { background: #1a1a24; color: gold; border-color: #1a1a24; font-weight: bold; transform: scale(1.05); }
+.hour-btn:disabled, .hour-btn.disabled { background-color: #f0f0f0; color: #aaa; border-color: #e6e6e6; cursor: not-allowed; text-decoration: line-through; }
 
-/* Animación para evitar saltos bruscos al cambiar de pantalla */
-.app-screen {
-    width: 100%;
-    animation: fadeIn 0.3s ease-in-out;
-}
+/* Barra Inferior Fija (Confirmación) */
+.fixed-bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; padding: 15px 20px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-top: 1px solid #eee; z-index: 100; }
+.fixed-bottom-bar .btn-primary-large { margin-top: 0; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+/* Resumen y Ticket */
+.summary-card { background: #fffdf5; padding: 15px; border-radius: 8px; margin: 20px; border-left: 4px solid gold; border-right: 1px solid #eee; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+.summary-card p { margin-bottom: 5px; font-size: 0.95rem; }
+.ticket-container { border: 2px dashed #ccc; text-align: center; background: #fcfcfc; padding: 30px 20px; border-radius: 12px; margin-top: 20px; }
+.ticket-container h2 { color: #1a1a24; margin-bottom: 20px; }
+.ticket-details p { margin-bottom: 8px; font-size: 1rem; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+.ticket-details p:last-child { border-bottom: none; }
+.text-muted { color: #888; text-align: center; grid-column: span 3; font-style: italic; margin-top: 10px; }
 
-.card {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 18px;
-    border: 1px solid var(--border-color);
-    width: 100%;
-    display: flex;
-    flex-direction: column; /* Obliga a los elementos a ir hacia abajo */
-}
+/* Tarjetas del Dashboard de Propietarios */
+.appointment-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s; border-left: 4px solid #1a1a24; }
+.appointment-card:hover { transform: translateX(5px); border-left-color: gold; }
+.appointment-card h4 { margin-bottom: 8px; color: #1a1a24; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; }
+.appointment-card .badge { background: gold; color: #111; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+.appointment-card p { font-size: 0.9rem; color: #555; margin-bottom: 6px; line-height: 1.4; }
+.empty-state { text-align: center; padding: 30px 20px; color: #999; font-style: italic; font-size: 0.95rem; background: #fafafa; border-radius: 8px; border: 1px dashed #ddd; }
 
-.card h2 { color: var(--text-main); font-size: 1.15rem; margin-bottom: 8px; text-align: center; }
-.instructions { color: var(--text-muted); font-size: 0.8rem; text-align: center; margin-bottom: 15px; }
-
-/* ==========================================================================
-   2. BOTONES GLOBALES Y FORMULARIOS
-   ========================================================================== */
-.btn-primary { width: 100%; background-color: var(--primary-color); color: #000; border: none; border-radius: 8px; padding: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
-.btn-primary:active { transform: scale(0.98); }
-.btn-secondary { width: 100%; background-color: #333; color: var(--text-main); border: none; border-radius: 8px; padding: 12px; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
-.btn-secondary:active { background-color: #444; }
-.button-actions { display: flex; gap: 10px; width: 100%; }
-.btn-sm-admin { background-color: #2d2d2d; color: var(--primary-color); border: 1px solid var(--primary-color); padding: 6px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 20px; cursor: pointer; }
-
-.form-group { margin-bottom: 12px; width: 100%; }
-.form-group label { display: block; color: var(--primary-color); font-size: 0.75rem; font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
-.form-group input { width: 100%; background-color: var(--input-bg); border: 1px solid #444; border-radius: 8px; padding: 11px; color: var(--text-main); font-size: 0.9rem; outline: none; }
-.form-group input:focus { border-color: var(--primary-color); }
-.radio-group label { display: block; color: var(--text-main); font-size: 0.85rem; cursor: pointer; margin-bottom: 8px; }
-
-/* ==========================================================================
-   3. PANTALLA INICIO Y SELECCIÓN DE BARBEROS
-   ========================================================================== */
-.barber-shop-photo img { width: 100%; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px; }
-.shop-name { font-size: 1.35rem !important; color: var(--primary-color) !important; margin-bottom: 5px; }
-.shop-direction, .shop-schedule { color: var(--text-main); font-size: 0.85rem; margin-bottom: 8px; text-align: center; }
-
-.barbers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; width: 100%; }
-.barber-card { background-color: #1a1a1a; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-.barber-card .avatar { width: 45px; height: 45px; margin-bottom: 8px; border-radius: 50%; overflow: hidden; background-color: #2d2d2d; }
-.barber-card span { color: var(--text-main); font-size: 0.8rem; font-weight: 600; }
-.barber-card small { color: var(--text-muted); font-size: 0.65rem; margin-top: 4px; }
-.barber-card.active { border-color: var(--primary-color); background-color: rgba(212, 175, 55, 0.05); }
-
-/* ==========================================================================
-   4. CALENDARIO DINÁMICO (SOPORTE MULTIFILA ESTRICTO)
-   ========================================================================== */
-.calendar-box { background-color: #1a1a1a; border-radius: 8px; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color); width: 100%; }
-.calendar-header { display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); font-weight: bold; margin-bottom: 10px; }
-.calendar-header button { background: none; border: none; color: var(--text-main); cursor: pointer; padding: 5px 15px; font-size: 1rem; }
-.calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; margin-bottom: 8px; }
-
-.calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-auto-rows: 1fr; /* Garantiza que todas las filas midan lo mismo */
-    gap: 4px;
-    text-align: center;
-}
-
-.calendar-days div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px 0;
-    font-size: 0.8rem;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.day-normal { color: var(--text-main); font-weight: 500; }
-.day-normal:hover { background-color: #333; }
-.day-off { color: #3a3a3a; cursor: not-allowed; pointer-events: none; }
-.day-today { border: 1px dashed var(--primary-color); color: var(--primary-color); font-weight: bold; }
-.day-active { background-color: var(--primary-color) !important; color: #000 !important; font-weight: bold; }
-
-.section-label { display: block; color: var(--primary-color); font-size: 0.75rem; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; }
-.hours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
-.hour-btn { padding: 10px 0; font-size: 0.8rem; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; width: 100%; }
-.hour-btn.available { background-color: #2e4a24; color: #a2e0a2; }
-.hour-btn.busy { background-color: #3a2222; color: #ff5555; cursor: not-allowed; opacity: 0.4; }
-.hour-btn.current-select { background-color: var(--primary-color); color: #000; font-weight: bold; }
-
-/* ==========================================================================
-   5. MÓDULO ADMINISTRATIVO (PESTAÑAS)
-   ========================================================================== */
-.tab-header { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; width: 100%; }
-.tab-btn { flex: 1; background: none; border: none; color: var(--text-muted); padding: 12px 0; cursor: pointer; font-size: 0.85rem; font-weight: bold; transition: 0.2s; }
-.tab-btn.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
-.section-subtitle { color: var(--text-muted); font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; width: 100%; }
-.form-divider { border: 0; border-top: 1px solid var(--border-color); margin: 15px 0; width: 100%; }
-.barber-input-block { background-color: #151515; padding: 12px; border-radius: 6px; border: 1px solid #262626; width: 100%; }
-
-/* ==========================================================================
-   6. TICKET DE RECIBO PREMIUM (CAPTURAS DE PANTALLA)
-   ========================================================================== */
-.ticket-summary { background-color: #151515; border-left: 3px solid var(--primary-color); padding: 12px; border-radius: 4px; margin-bottom: 15px; width: 100%; }
-.ticket-summary p { color: var(--text-main); font-size: 0.85rem; margin-bottom: 4px; }
-
-.receipt-container { padding: 10px 5px; display: flex; flex-direction: column; align-items: center; width: 100%; }
-.receipt-card { background-color: #ffffff; color: #121212; border-radius: 6px; padding: 25px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); width: 100%; position: relative; }
-.receipt-header { text-align: center; margin-bottom: 15px; }
-.receipt-logo { font-size: 2.2rem; display: block; margin-bottom: 5px; }
-.receipt-header h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 2px; }
-.receipt-header p { color: #666; font-size: 0.8rem; font-weight: 600; }
-
-.receipt-divider-dash { border-top: 2px dashed #bbbbbb; margin: 15px 0; width: 100%; }
-
-.receipt-body { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-.receipt-row { display: flex; justify-content: space-between; font-size: 0.85rem; align-items: center; }
-.receipt-row span { color: #555555; }
-.receipt-row strong { color: #000000; font-weight: 700; text-align: right; }
-
-.barcode-wrapper { display: flex; flex-direction: column; align-items: center; margin-top: 20px; width: 100%; }
-.barcode-lines { width: 180px; height: 40px; background: repeating-linear-gradient(90deg, #000, #000 3px, #fff 3px, #fff 7px); }
-.barcode-wrapper small { font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; font-weight: bold; margin-top: 8px; color: #444; }
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+/* Radios (Método de Pago) */
+label input[type="radio"] { margin-right: 8px; transform: scale(1.2); cursor: pointer; }
+label { cursor: pointer; }
