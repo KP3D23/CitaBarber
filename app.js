@@ -18,12 +18,25 @@ let datosBarberos = [];
 const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
 // ==========================================================================
-// 2. FUNCIONES AUXILIARES
+// 2. FUNCIONES AUXILIARES Y PARSERS
 // ==========================================================================
 function navegarA(idPantallaDestino) {
     document.querySelectorAll('.app-screen').forEach(p => p.style.display = 'none');
     const destino = document.getElementById(idPantallaDestino);
     if (destino) destino.style.display = 'block';
+}
+
+// NUEVO: Traduce textos como "7 de Julio del 2026" a un objeto Date real de JS
+function parseFechaClasica(fechaStr) {
+    const mesesMapa = {"Enero":0, "Febrero":1, "Marzo":2, "Abril":3, "Mayo":4, "Junio":5, "Julio":6, "Agosto":7, "Septiembre":8, "Octubre":9, "Noviembre":10, "Diciembre":11};
+    const limpia = fechaStr.replace(" del ", " de ");
+    const partes = limpia.split(" de ");
+    if(partes.length < 3) return new Date(); 
+    
+    const dia = parseInt(partes[0]);
+    const mesTexto = partes[1].trim();
+    const año = parseInt(partes[2]);
+    return new Date(año, mesesMapa[mesTexto] || 0, dia);
 }
 
 function generarBloquesHoras(horaInicio, horaFin) {
@@ -51,7 +64,6 @@ document.getElementById('b2-start')?.addEventListener('change', (e) => document.
 // 3. CARGA DINÁMICA DE DATOS (BARBERÍA Y BARBEROS)
 // ==========================================================================
 async function inicializarApp() {
-    // Traer todas las barberías registradas
     const { data: shops, error } = await db.from('barberias').select('*').order('created_at', { ascending: false });
     const container = document.getElementById('shop-list-container');
     container.innerHTML = "";
@@ -66,7 +78,6 @@ async function inicializarApp() {
                 <p>🕒 ${shop.horario_general || '9:00 AM - 7:00 PM'}</p>
                 <button class="btn-primary" style="margin-top:15px; width:100%;">Agendar Aquí</button>
             `;
-            // Al hacer clic, carga los barberos de ESA barbería
             card.addEventListener('click', async () => {
                 currentShopId = shop.id;
                 await cargarBarberosDesdeBD();
@@ -76,9 +87,7 @@ async function inicializarApp() {
                 reservaTemporal.barberId = datosBarberos[0].id; 
                 reservaTemporal.barberNombre = datosBarberos[0].nombre;
                 
-                renderizarBarberos(); 
-                renderizarCalendario(); 
-                navegarA('screen-barbers-calendar');
+                renderizarBarberos(); renderizarCalendario(); navegarA('screen-barbers-calendar');
             });
             container.appendChild(card);
         });
@@ -188,13 +197,12 @@ async function renderizarHoras() {
 }
 
 // ==========================================================================
-// 4. FLUJO DEL PROPIETARIO: DASHBOARD DE CITAS Y CANCELACIÓN
+// 4. FLUJO DEL PROPIETARIO: DASHBOARD SEGMENTADO Y CANCELACIONES
 // ==========================================================================
 window.cancelarCita = async function(idCita) {
     if(confirm("¿Estás seguro de cancelar esta cita? El turno volverá a estar disponible para el público.")) {
         await db.from('citas').delete().eq('id', idCita);
         alert("Cita cancelada con éxito.");
-        // Recargar el panel automáticamente
         const { data: userShop } = await db.from('barberias').select('*').eq('id', currentShopId).single();
         await cargarDashboard(userShop);
     }
@@ -215,39 +223,63 @@ async function cargarDashboard(shopData) {
     const mapClientes = {};
     if (todosClientes) todosClientes.forEach(c => mapClientes[c.cedula] = { nombre: `${c.nombre} ${c.apellido}`, tlf: c.telefono });
 
-    const hoyDate = new Date();
-    const strHoy = `${hoyDate.getDate()} de ${nombresMeses[hoyDate.getMonth()]} del ${hoyDate.getFullYear()}`;
-    const strPasados = [];
-    for(let i=1; i<=3; i++) { let d = new Date(); d.setDate(d.getDate() - i); strPasados.push(`${d.getDate()} de ${nombresMeses[d.getMonth()]} del ${d.getFullYear()}`); }
+    // Captura del tiempo base para la segmentación inteligente
+    const hoyCero = new Date(); hoyCero.setHours(0,0,0,0);
 
-    const citasHoy = citas.filter(c => c.fecha_reservada === strHoy);
-    const citasPasadas = citas.filter(c => strPasados.includes(c.fecha_reservada));
+    const listWeek = document.getElementById('dashboard-week-list');
+    const listMonth = document.getElementById('dashboard-month-list');
+    const listFar = document.getElementById('dashboard-far-list');
+    const listPasado = document.getElementById('dashboard-past-list');
 
-    const listHoy = document.getElementById('dashboard-today-list');
-    listHoy.innerHTML = "";
-    if (citasHoy.length === 0) listHoy.innerHTML = "<div class='empty-state'>No hay citas programadas para hoy.</div>";
-    else citasHoy.forEach(c => {
+    listWeek.innerHTML = ""; listMonth.innerHTML = ""; listFar.innerHTML = ""; listPasado.innerHTML = "";
+
+    let contWeek = 0, contMonth = 0, contFar = 0, contPasado = 0;
+
+    citas.forEach(c => {
+        const fechaCita = parseFechaClasica(c.fecha_reservada);
+        fechaCita.setHours(0,0,0,0);
+
         const clienteInfo = mapClientes[c.cedula_cliente] || { nombre: c.cedula_cliente, tlf: "N/A" };
         const nombreBarbero = mapBarberos[c.id_barbero] || "Barbero";
-        listHoy.innerHTML += `
+
+        // Estructura limpia de la tarjeta de cita
+        const cardHTML = `
             <div class="appointment-card">
-                <h4>${c.hora_reservada} <span class="badge">${nombreBarbero}</span></h4>
+                <h4>${c.fecha_reservada} | ${c.hora_reservada} <span class="badge">${nombreBarbero}</span></h4>
                 <p><strong>Cliente:</strong> ${clienteInfo.nombre} (C.I: ${c.cedula_cliente})</p>
                 <p><strong>Teléfono:</strong> ${clienteInfo.tlf}</p>
                 <p><strong>Pago:</strong> ${c.metodo_pago} ${c.referencia_pago !== 'N/A' ? '(Ref: ' + c.referencia_pago + ')' : ''}</p>
-                <button onclick="cancelarCita('${c.id}')" class="btn-danger" style="margin-top:10px;">❌ Cancelar Turno</button>
+                ${fechaCita >= hoyCero ? `<button onclick="cancelarCita('${c.id}')" class="btn-danger" style="margin-top:10px;">❌ Cancelar Turno</button>` : ''}
             </div>
         `;
+
+        if (fechaCita < hoyCero) {
+            // Cita antigua
+            listPasado.innerHTML += cardHTML;
+            contPasado++;
+        } else {
+            // Cita futura o de hoy: calculamos la brecha de días
+            const diffTiempo = fechaCita.getTime() - hoyCero.getTime();
+            const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+
+            if (diffDias <= 7) {
+                listWeek.innerHTML += cardHTML;
+                contWeek++;
+            } else if (diffDias <= 30) {
+                listMonth.innerHTML += cardHTML;
+                contMonth++;
+            } else {
+                listFar.innerHTML += cardHTML;
+                contFar++;
+            }
+        }
     });
 
-    const listPasado = document.getElementById('dashboard-past-list');
-    listPasado.innerHTML = "";
-    if (citasPasadas.length === 0) listPasado.innerHTML = "<div class='empty-state'>No hay citas registradas en los últimos 3 días.</div>";
-    else citasPasadas.forEach(c => {
-        const clienteInfo = mapClientes[c.cedula_cliente] || { nombre: c.cedula_cliente };
-        const nombreBarbero = mapBarberos[c.id_barbero] || "Barbero";
-        listPasado.innerHTML += `<div class="appointment-card"><h4>${c.fecha_reservada} | ${c.hora_reservada} <span class="badge" style="background:#eee;">${nombreBarbero}</span></h4><p><strong>Cliente:</strong> ${clienteInfo.nombre}</p></div>`;
-    });
+    // Control de estados vacíos para que la app mantenga elegancia estética
+    if(contWeek === 0) listWeek.innerHTML = "<div class='empty-state'>No hay citas programadas para esta semana.</div>";
+    if(contMonth === 0) listMonth.innerHTML = "<div class='empty-state'>No hay citas para el resto del mes.</div>";
+    if(contFar === 0) listFar.innerHTML = "<div class='empty-state'>No hay citas lejanas agendadas todavía.</div>";
+    if(contPasado === 0) listPasado.innerHTML = "<div class='empty-state'>No hay registro de historial de citas pasadas.</div>";
 }
 
 // ==========================================================================
@@ -314,7 +346,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error || !data) alert("Usuario o contraseña incorrectos.");
         else { 
             e.target.reset(); 
-            currentShopId = data.id; // Clave para que la recarga de cancelaciones funcione
+            currentShopId = data.id; 
             await cargarDashboard(data); 
             navegarA('screen-admin-dashboard'); 
         }
