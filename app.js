@@ -8,7 +8,7 @@ const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 // ==========================================================================
 // 1. VARIABLES GLOBALES DE ESTADO
 // ==========================================================================
-let currentShopId = null; // Guardará el ID de la barbería actual
+let currentShopId = null; 
 let fechaSistema = new Date();
 let fechaNavegacion = new Date();
 let diaSeleccionado = null;
@@ -30,13 +30,11 @@ function generarBloquesHoras(horaInicio, horaFin) {
     let horas = [];
     let [hIn, mIn] = horaInicio.split(':').map(Number);
     let [hFi, mFi] = horaFin.split(':').map(Number);
-
     let actual = new Date(); actual.setHours(hIn, mIn, 0, 0);
     let final = new Date(); final.setHours(hFi, mFi, 0, 0);
 
     while(actual < final) {
-        let h = actual.getHours();
-        let m = actual.getMinutes();
+        let h = actual.getHours(); let m = actual.getMinutes();
         let ampm = h >= 12 ? 'PM' : 'AM';
         let h12 = h % 12 || 12;
         let mStr = m === 0 ? '00' : m;
@@ -53,21 +51,39 @@ document.getElementById('b2-start')?.addEventListener('change', (e) => document.
 // 3. CARGA DINÁMICA DE DATOS (BARBERÍA Y BARBEROS)
 // ==========================================================================
 async function inicializarApp() {
-    // 1. Traer la última barbería registrada en la base de datos
-    const { data: shops, error } = await db.from('barberias').select('*').order('created_at', { ascending: false }).limit(1);
-    
+    // Traer todas las barberías registradas
+    const { data: shops, error } = await db.from('barberias').select('*').order('created_at', { ascending: false });
+    const container = document.getElementById('shop-list-container');
+    container.innerHTML = "";
+
     if (shops && shops.length > 0) {
-        currentShopId = shops[0].id;
-        document.getElementById('home-shop-name').innerText = shops[0].nombre_local;
-        document.getElementById('home-shop-dir').innerText = `📍 ${shops[0].direccion}`;
-        document.getElementById('home-shop-hours').innerText = `🕒 Horario general: ${shops[0].horario_general || '9:00 AM - 7:00 PM'}`;
-        
-        // 2. Cargar SOLO los barberos de este local
-        await cargarBarberosDesdeBD();
+        shops.forEach(shop => {
+            const card = document.createElement('div');
+            card.className = 'shop-card';
+            card.innerHTML = `
+                <h3>${shop.nombre_local}</h3>
+                <p>📍 ${shop.direccion}</p>
+                <p>🕒 ${shop.horario_general || '9:00 AM - 7:00 PM'}</p>
+                <button class="btn-primary" style="margin-top:15px; width:100%;">Agendar Aquí</button>
+            `;
+            // Al hacer clic, carga los barberos de ESA barbería
+            card.addEventListener('click', async () => {
+                currentShopId = shop.id;
+                await cargarBarberosDesdeBD();
+                if (datosBarberos.length === 0) return alert("Este local aún no tiene barberos configurados.");
+                
+                fechaNavegacion = new Date(); diaSeleccionado = null; reservaTemporal.hora = "";
+                reservaTemporal.barberId = datosBarberos[0].id; 
+                reservaTemporal.barberNombre = datosBarberos[0].nombre;
+                
+                renderizarBarberos(); 
+                renderizarCalendario(); 
+                navegarA('screen-barbers-calendar');
+            });
+            container.appendChild(card);
+        });
     } else {
-        document.getElementById('home-shop-name').innerText = "Bienvenido a Cita-Barber";
-        document.getElementById('home-shop-dir').innerText = "Registra tu local en el panel de propietarios.";
-        document.getElementById('home-shop-hours').innerText = "";
+        container.innerHTML = "<p>No hay barberías registradas en la plataforma.</p>";
     }
 }
 
@@ -77,12 +93,7 @@ async function cargarBarberosDesdeBD() {
     
     if (!error && data) {
         datosBarberos = data.map(b => {
-            let horasParseadas = [];
-            if (b.horario && b.horario.includes(',')) {
-                horasParseadas = b.horario.split(',');
-            } else {
-                horasParseadas = ["9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM"];
-            }
+            let horasParseadas = (b.horario && b.horario.includes(',')) ? b.horario.split(',') : ["9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM"];
             return { id: b.id, nombre: b.nombre, horas: horasParseadas };
         });
     }
@@ -96,11 +107,8 @@ function renderizarBarberos() {
         card.className = `barber-card ${reservaTemporal.barberId === b.id ? 'active' : ''}`;
         card.innerHTML = `<div class="avatar"><img src="https://api.dicebear.com/7.x/bottts/svg?seed=${b.nombre}" alt="Avatar" style="width:100%; border-radius:50%;"></div><span>${b.nombre}</span>`;
         card.addEventListener('click', async () => {
-            reservaTemporal.barberId = b.id;
-            reservaTemporal.barberNombre = b.nombre;
-            reservaTemporal.hora = "";
-            renderizarBarberos();
-            await renderizarHoras(); 
+            reservaTemporal.barberId = b.id; reservaTemporal.barberNombre = b.nombre; reservaTemporal.hora = "";
+            renderizarBarberos(); await renderizarHoras(); 
         });
         contenedor.appendChild(card);
     });
@@ -109,35 +117,27 @@ function renderizarBarberos() {
 function renderizarCalendario() {
     const grid = document.getElementById('calendar-days-grid');
     grid.innerHTML = "";
-    const año = fechaNavegacion.getFullYear();
-    const mes = fechaNavegacion.getMonth();
+    const año = fechaNavegacion.getFullYear(); const mes = fechaNavegacion.getMonth();
     document.getElementById('month-year-title').innerText = `${nombresMeses[mes]} ${año}`;
     
-    const primerDiaIndex = new Date(año, mes, 1).getDay(); 
-    const diasTotales = new Date(año, mes + 1, 0).getDate();
+    const primerDiaIndex = new Date(año, mes, 1).getDay(); const diasTotales = new Date(año, mes + 1, 0).getDate();
     let espaciosVacios = primerDiaIndex === 0 ? 6 : primerDiaIndex - 1;
     
     for (let i = 0; i < espaciosVacios; i++) grid.appendChild(document.createElement("div"));
     
     for (let dia = 1; dia <= diasTotales; dia++) {
-        const divDia = document.createElement("div");
-        divDia.innerText = dia;
-        const fechaIteracion = new Date(año, mes, dia);
-        fechaIteracion.setHours(23, 59, 59, 999); 
+        const divDia = document.createElement("div"); divDia.innerText = dia;
+        const fechaIteracion = new Date(año, mes, dia); fechaIteracion.setHours(23, 59, 59, 999); 
 
-        if (fechaIteracion < fechaSistema) {
-            divDia.className = "day-off"; 
-        } else {
+        if (fechaIteracion < fechaSistema) { divDia.className = "day-off"; } 
+        else {
             divDia.className = "day-normal";
             if (año === fechaSistema.getFullYear() && mes === fechaSistema.getMonth() && dia === fechaSistema.getDate()) divDia.classList.add("day-today");
             if (diaSeleccionado === dia) divDia.className = "day-active";
 
             divDia.addEventListener('click', async () => {
-                diaSeleccionado = dia;
-                reservaTemporal.fechaStr = `${dia} de ${nombresMeses[mes]} del ${año}`;
-                reservaTemporal.hora = ""; 
-                renderizarCalendario();
-                await renderizarHoras(); 
+                diaSeleccionado = dia; reservaTemporal.fechaStr = `${dia} de ${nombresMeses[mes]} del ${año}`; reservaTemporal.hora = ""; 
+                renderizarCalendario(); await renderizarHoras(); 
             });
         }
         grid.appendChild(divDia);
@@ -160,19 +160,14 @@ async function renderizarHoras() {
     contenedor.innerHTML = "";
 
     barbero.horas.forEach((horaCadena) => {
-        const btn = document.createElement('button');
-        btn.type = "button";
-        btn.className = "hour-btn";
-        btn.innerText = horaCadena;
+        const btn = document.createElement('button'); btn.type = "button"; btn.className = "hour-btn"; btn.innerText = horaCadena;
         
         let horaYaPaso = false;
         if (esHoy) {
-            const regex = /(\d+):(\d+)\s*(AM|PM)/i;
-            const match = horaCadena.match(regex);
+            const regex = /(\d+):(\d+)\s*(AM|PM)/i; const match = horaCadena.match(regex);
             if (match) {
                 let h = parseInt(match[1]); let m = parseInt(match[2]); let ampm = match[3].toUpperCase();
-                if (ampm === 'PM' && h < 12) h += 12;
-                if (ampm === 'AM' && h === 12) h = 0;
+                if (ampm === 'PM' && h < 12) h += 12; if (ampm === 'AM' && h === 12) h = 0;
                 const horaBloque = new Date(); horaBloque.setHours(h, m, 0, 0);
                 if (ahora > horaBloque) horaYaPaso = true;
             }
@@ -185,8 +180,7 @@ async function renderizarHoras() {
             if(reservaTemporal.hora === horaCadena) btn.classList.add('current-select');
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.hour-btn.available').forEach(b => b.classList.remove('current-select'));
-                btn.classList.add('current-select');
-                reservaTemporal.hora = horaCadena;
+                btn.classList.add('current-select'); reservaTemporal.hora = horaCadena;
             });
         }
         contenedor.appendChild(btn);
@@ -194,8 +188,18 @@ async function renderizarHoras() {
 }
 
 // ==========================================================================
-// 4. FLUJO DEL PROPIETARIO: DASHBOARD DE CITAS
+// 4. FLUJO DEL PROPIETARIO: DASHBOARD DE CITAS Y CANCELACIÓN
 // ==========================================================================
+window.cancelarCita = async function(idCita) {
+    if(confirm("¿Estás seguro de cancelar esta cita? El turno volverá a estar disponible para el público.")) {
+        await db.from('citas').delete().eq('id', idCita);
+        alert("Cita cancelada con éxito.");
+        // Recargar el panel automáticamente
+        const { data: userShop } = await db.from('barberias').select('*').eq('id', currentShopId).single();
+        await cargarDashboard(userShop);
+    }
+};
+
 async function cargarDashboard(shopData) {
     document.getElementById('dashboard-shop-name').innerText = "Panel: " + shopData.nombre_local;
     const { data: misBarberos } = await db.from('barberos').select('id, nombre').eq('id_barberia', shopData.id);
@@ -225,7 +229,15 @@ async function cargarDashboard(shopData) {
     else citasHoy.forEach(c => {
         const clienteInfo = mapClientes[c.cedula_cliente] || { nombre: c.cedula_cliente, tlf: "N/A" };
         const nombreBarbero = mapBarberos[c.id_barbero] || "Barbero";
-        listHoy.innerHTML += `<div class="appointment-card"><h4>${c.hora_reservada} <span class="badge">${nombreBarbero}</span></h4><p><strong>Cliente:</strong> ${clienteInfo.nombre} (C.I: ${c.cedula_cliente})</p><p><strong>Teléfono:</strong> ${clienteInfo.tlf}</p><p><strong>Pago:</strong> ${c.metodo_pago} ${c.referencia_pago !== 'N/A' ? '(Ref: ' + c.referencia_pago + ')' : ''}</p></div>`;
+        listHoy.innerHTML += `
+            <div class="appointment-card">
+                <h4>${c.hora_reservada} <span class="badge">${nombreBarbero}</span></h4>
+                <p><strong>Cliente:</strong> ${clienteInfo.nombre} (C.I: ${c.cedula_cliente})</p>
+                <p><strong>Teléfono:</strong> ${clienteInfo.tlf}</p>
+                <p><strong>Pago:</strong> ${c.metodo_pago} ${c.referencia_pago !== 'N/A' ? '(Ref: ' + c.referencia_pago + ')' : ''}</p>
+                <button onclick="cancelarCita('${c.id}')" class="btn-danger" style="margin-top:10px;">❌ Cancelar Turno</button>
+            </div>
+        `;
     });
 
     const listPasado = document.getElementById('dashboard-past-list');
@@ -243,22 +255,14 @@ async function cargarDashboard(shopData) {
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', async () => {
     
-    await inicializarApp(); // Llamada inicial para cargar la tienda correcta
-
-    document.getElementById('btn-start-booking').addEventListener('click', () => {
-        if (datosBarberos.length === 0) return alert("El local aún no ha configurado sus barberos.");
-        fechaNavegacion = new Date(); diaSeleccionado = null; reservaTemporal.hora = "";
-        renderizarBarberos(); 
-        if(datosBarberos.length > 0) { reservaTemporal.barberId = datosBarberos[0].id; reservaTemporal.barberNombre = datosBarberos[0].nombre; }
-        renderizarCalendario(); navegarA('screen-barbers-calendar');
-    });
+    await inicializarApp(); 
 
     document.getElementById('btn-admin-panel').addEventListener('click', () => navegarA('screen-admin-register'));
     document.getElementById('btn-cancel-admin').addEventListener('click', () => navegarA('screen-home'));
     document.getElementById('btn-back-to-home').addEventListener('click', () => navegarA('screen-home'));
-    document.getElementById('btn-back-to-calendar').addEventListener('click', () => navegarA('screen-barbers-calendar'));
+    document.getElementById('btn-back-to-calendar').addEventListener('click', () => navegarA('screen-home'));
     document.getElementById('btn-receipt-finish').addEventListener('click', () => navegarA('screen-home'));
-    document.getElementById('btn-logout')?.addEventListener('click', () => navegarA('screen-home'));
+    document.getElementById('btn-logout')?.addEventListener('click', () => { currentShopId = null; navegarA('screen-home'); });
 
     document.getElementById('prev-month').addEventListener('click', async () => { fechaNavegacion.setMonth(fechaNavegacion.getMonth() - 1); diaSeleccionado = null; reservaTemporal.hora = ""; renderizarCalendario(); await renderizarHoras(); });
     document.getElementById('next-month').addEventListener('click', async () => { fechaNavegacion.setMonth(fechaNavegacion.getMonth() + 1); diaSeleccionado = null; reservaTemporal.hora = ""; renderizarCalendario(); await renderizarHoras(); });
@@ -268,9 +272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('btn-go-to-auth-pay').addEventListener('click', () => {
         if (!diaSeleccionado || !reservaTemporal.hora) return alert('Selecciona un día y una hora disponible para continuar.');
-        document.getElementById('summary-barber').innerText = reservaTemporal.barberNombre;
-        document.getElementById('summary-date').innerText = reservaTemporal.fechaStr;
-        document.getElementById('summary-hour').innerText = reservaTemporal.hora;
+        document.getElementById('summary-barber').innerText = reservaTemporal.barberNombre; document.getElementById('summary-date').innerText = reservaTemporal.fechaStr; document.getElementById('summary-hour').innerText = reservaTemporal.hora;
         navegarA('screen-auth-payment');
     });
 
@@ -310,7 +312,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         e.preventDefault();
         const { data, error } = await db.from('barberias').select('*').eq('usuario_admin', document.getElementById('login-user').value.trim()).eq('password', document.getElementById('login-pass').value.trim()).single();
         if (error || !data) alert("Usuario o contraseña incorrectos.");
-        else { e.target.reset(); await cargarDashboard(data); navegarA('screen-admin-dashboard'); }
+        else { 
+            e.target.reset(); 
+            currentShopId = data.id; // Clave para que la recarga de cancelaciones funcione
+            await cargarDashboard(data); 
+            navegarA('screen-admin-dashboard'); 
+        }
     });
 
     document.getElementById('admin-shop-form').addEventListener('submit', async (e) => {
@@ -327,6 +334,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         await db.from('barberos').insert([ { id_barberia: shopData.id, nombre: document.getElementById('b1-name').value, horario: horarioB1 }, { id_barberia: shopData.id, nombre: document.getElementById('b2-name').value, horario: horarioB2 } ]);
 
         alert("Local registrado. Ya puedes iniciar sesión y ver tu panel."); e.target.reset(); 
-        await inicializarApp(); // Recarga la app para mostrar tu nuevo local de inmediato
+        await inicializarApp(); 
     });
 });
