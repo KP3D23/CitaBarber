@@ -74,15 +74,28 @@
             <h2 id="dashboard-shop-name">Panel de Control</h2>
             <button id="btn-logout" class="btn-text">Salir 🚪</button>
         </header>
-        <main style="padding: 20px;">
-            <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px;">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de Hoy / Pendientes</h3>
-                <div id="dashboard-today-list"></div>
+        <main style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+            
+            <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px; padding: 15px;">
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de esta Semana</h3>
+                <div id="dashboard-week-list"></div>
             </section>
-            <section class="section-block" style="margin-top: 20px; background: #f9f9f9; border-radius: 8px;">
-                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial (Últimos 3 días)</h3>
+
+            <section class="section-block" style="background: #fdfbf7; border-left: 4px solid #f39c12; border-radius: 8px; padding: 15px;">
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📆 Citas de este Mes</h3>
+                <div id="dashboard-month-list"></div>
+            </section>
+
+            <section class="section-block" style="background: #f7f9fd; border-left: 4px solid #2980b9; border-radius: 8px; padding: 15px;">
+                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">🌍 Citas Lejanas</h3>
+                <div id="dashboard-far-list"></div>
+            </section>
+
+            <section class="section-block" style="background: #f9f9f9; border-radius: 8px; padding: 15px; border-left: 4px solid #7f8c8d;">
+                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial Reciente (Pasadas)</h3>
                 <div id="dashboard-past-list"></div>
             </section>
+
         </main>
     </div>
 
