@@ -46,6 +46,12 @@
                 <input type="text" id="admin-user" placeholder="Crea un Usuario" required>
                 <input type="password" id="admin-pass" placeholder="Crea una Contraseña" required>
                 
+                <h3>Datos de Cobro (Pago Móvil)</h3>
+                <input type="text" id="shop-reg-price" placeholder="Precio del Corte (Ej: $5 o 180 Bs)" required>
+                <input type="text" id="shop-reg-bank" placeholder="Banco (Ej: Banesco)" required>
+                <input type="text" id="shop-reg-pm-phone" placeholder="Teléfono Pago Móvil" required>
+                <input type="text" id="shop-reg-pm-cedula" placeholder="Cédula o RIF" required>
+
                 <h3>Horarios Staff (Barbero 1)</h3>
                 <input type="text" id="b1-name" placeholder="Nombre Barbero 1" required>
                 <div class="time-group">
@@ -75,27 +81,22 @@
             <button id="btn-logout" class="btn-text">Salir 🚪</button>
         </header>
         <main style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
-            
             <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px; padding: 15px;">
                 <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de esta Semana</h3>
                 <div id="dashboard-week-list"></div>
             </section>
-
             <section class="section-block" style="background: #fdfbf7; border-left: 4px solid #f39c12; border-radius: 8px; padding: 15px;">
                 <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📆 Citas de este Mes</h3>
                 <div id="dashboard-month-list"></div>
             </section>
-
             <section class="section-block" style="background: #f7f9fd; border-left: 4px solid #2980b9; border-radius: 8px; padding: 15px;">
                 <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">🌍 Citas Lejanas</h3>
                 <div id="dashboard-far-list"></div>
             </section>
-
             <section class="section-block" style="background: #f9f9f9; border-radius: 8px; padding: 15px; border-left: 4px solid #7f8c8d;">
-                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial Reciente (Pasadas)</h3>
+                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial Reciente</h3>
                 <div id="dashboard-past-list"></div>
             </section>
-
         </main>
     </div>
 
@@ -152,6 +153,14 @@
                 <h3>Método de Pago</h3>
                 <label><input type="radio" name="pay-method" value="sitio" checked> Pago en el Local</label><br>
                 <label><input type="radio" name="pay-method" value="movil"> Pago Móvil</label>
+                
+                <div id="pm-info-box" class="pm-info-box" style="display:none;">
+                    <p><strong>Monto a pagar:</strong> <span id="pm-show-price"></span></p>
+                    <p><strong>Banco:</strong> <span id="pm-show-bank"></span></p>
+                    <p><strong>Teléfono:</strong> <span id="pm-show-phone"></span></p>
+                    <p><strong>Cédula:</strong> <span id="pm-show-cedula"></span></p>
+                </div>
+
                 <div id="reference-group" style="display:none; margin-top:10px;">
                     <input type="text" id="pay-reference" placeholder="Últimos 4 dígitos de referencia">
                 </div>
