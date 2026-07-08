@@ -9,6 +9,7 @@ const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 // 1. VARIABLES GLOBALES DE ESTADO
 // ==========================================================================
 let currentShopId = null; 
+let datosLocalActual = null; // NUEVO: Guarda todos los datos del local seleccionado
 let fechaSistema = new Date();
 let fechaNavegacion = new Date();
 let diaSeleccionado = null;
@@ -26,17 +27,12 @@ function navegarA(idPantallaDestino) {
     if (destino) destino.style.display = 'block';
 }
 
-// NUEVO: Traduce textos como "7 de Julio del 2026" a un objeto Date real de JS
 function parseFechaClasica(fechaStr) {
     const mesesMapa = {"Enero":0, "Febrero":1, "Marzo":2, "Abril":3, "Mayo":4, "Junio":5, "Julio":6, "Agosto":7, "Septiembre":8, "Octubre":9, "Noviembre":10, "Diciembre":11};
     const limpia = fechaStr.replace(" del ", " de ");
     const partes = limpia.split(" de ");
     if(partes.length < 3) return new Date(); 
-    
-    const dia = parseInt(partes[0]);
-    const mesTexto = partes[1].trim();
-    const año = parseInt(partes[2]);
-    return new Date(año, mesesMapa[mesTexto] || 0, dia);
+    return new Date(parseInt(partes[2]), mesesMapa[partes[1].trim()] || 0, parseInt(partes[0]));
 }
 
 function generarBloquesHoras(horaInicio, horaFin) {
@@ -72,14 +68,17 @@ async function inicializarApp() {
         shops.forEach(shop => {
             const card = document.createElement('div');
             card.className = 'shop-card';
+            // NUEVO: Se muestra el precio del corte en la tarjeta
             card.innerHTML = `
                 <h3>${shop.nombre_local}</h3>
                 <p>📍 ${shop.direccion}</p>
                 <p>🕒 ${shop.horario_general || '9:00 AM - 7:00 PM'}</p>
+                <p style="color: gold; font-weight: bold; margin-top: 8px; font-size: 1.1rem;">💵 Precio: ${shop.precio_corte || 'Consultar'}</p>
                 <button class="btn-primary" style="margin-top:15px; width:100%;">Agendar Aquí</button>
             `;
             card.addEventListener('click', async () => {
                 currentShopId = shop.id;
+                datosLocalActual = shop; // Guardamos el local para leer sus datos bancarios luego
                 await cargarBarberosDesdeBD();
                 if (datosBarberos.length === 0) return alert("Este local aún no tiene barberos configurados.");
                 
@@ -99,7 +98,6 @@ async function inicializarApp() {
 async function cargarBarberosDesdeBD() {
     if (!currentShopId) return;
     const { data, error } = await db.from('barberos').select('*').eq('id_barberia', currentShopId);
-    
     if (!error && data) {
         datosBarberos = data.map(b => {
             let horasParseadas = (b.horario && b.horario.includes(',')) ? b.horario.split(',') : ["9:00 AM", "10:00 AM", "11:00 AM", "1:00 PM", "2:00 PM"];
@@ -223,26 +221,19 @@ async function cargarDashboard(shopData) {
     const mapClientes = {};
     if (todosClientes) todosClientes.forEach(c => mapClientes[c.cedula] = { nombre: `${c.nombre} ${c.apellido}`, tlf: c.telefono });
 
-    // Captura del tiempo base para la segmentación inteligente
     const hoyCero = new Date(); hoyCero.setHours(0,0,0,0);
 
-    const listWeek = document.getElementById('dashboard-week-list');
-    const listMonth = document.getElementById('dashboard-month-list');
-    const listFar = document.getElementById('dashboard-far-list');
-    const listPasado = document.getElementById('dashboard-past-list');
+    const listWeek = document.getElementById('dashboard-week-list'); const listMonth = document.getElementById('dashboard-month-list');
+    const listFar = document.getElementById('dashboard-far-list'); const listPasado = document.getElementById('dashboard-past-list');
 
     listWeek.innerHTML = ""; listMonth.innerHTML = ""; listFar.innerHTML = ""; listPasado.innerHTML = "";
-
     let contWeek = 0, contMonth = 0, contFar = 0, contPasado = 0;
 
     citas.forEach(c => {
-        const fechaCita = parseFechaClasica(c.fecha_reservada);
-        fechaCita.setHours(0,0,0,0);
-
+        const fechaCita = parseFechaClasica(c.fecha_reservada); fechaCita.setHours(0,0,0,0);
         const clienteInfo = mapClientes[c.cedula_cliente] || { nombre: c.cedula_cliente, tlf: "N/A" };
         const nombreBarbero = mapBarberos[c.id_barbero] || "Barbero";
 
-        // Estructura limpia de la tarjeta de cita
         const cardHTML = `
             <div class="appointment-card">
                 <h4>${c.fecha_reservada} | ${c.hora_reservada} <span class="badge">${nombreBarbero}</span></h4>
@@ -253,33 +244,19 @@ async function cargarDashboard(shopData) {
             </div>
         `;
 
-        if (fechaCita < hoyCero) {
-            // Cita antigua
-            listPasado.innerHTML += cardHTML;
-            contPasado++;
-        } else {
-            // Cita futura o de hoy: calculamos la brecha de días
-            const diffTiempo = fechaCita.getTime() - hoyCero.getTime();
-            const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
-
-            if (diffDias <= 7) {
-                listWeek.innerHTML += cardHTML;
-                contWeek++;
-            } else if (diffDias <= 30) {
-                listMonth.innerHTML += cardHTML;
-                contMonth++;
-            } else {
-                listFar.innerHTML += cardHTML;
-                contFar++;
-            }
+        if (fechaCita < hoyCero) { listPasado.innerHTML += cardHTML; contPasado++; } 
+        else {
+            const diffDias = Math.ceil((fechaCita.getTime() - hoyCero.getTime()) / (1000 * 60 * 60 * 24));
+            if (diffDias <= 7) { listWeek.innerHTML += cardHTML; contWeek++; } 
+            else if (diffDias <= 30) { listMonth.innerHTML += cardHTML; contMonth++; } 
+            else { listFar.innerHTML += cardHTML; contFar++; }
         }
     });
 
-    // Control de estados vacíos para que la app mantenga elegancia estética
     if(contWeek === 0) listWeek.innerHTML = "<div class='empty-state'>No hay citas programadas para esta semana.</div>";
     if(contMonth === 0) listMonth.innerHTML = "<div class='empty-state'>No hay citas para el resto del mes.</div>";
     if(contFar === 0) listFar.innerHTML = "<div class='empty-state'>No hay citas lejanas agendadas todavía.</div>";
-    if(contPasado === 0) listPasado.innerHTML = "<div class='empty-state'>No hay registro de historial de citas pasadas.</div>";
+    if(contPasado === 0) listPasado.innerHTML = "<div class='empty-state'>No hay registro de historial.</div>";
 }
 
 // ==========================================================================
@@ -294,7 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-back-to-home').addEventListener('click', () => navegarA('screen-home'));
     document.getElementById('btn-back-to-calendar').addEventListener('click', () => navegarA('screen-home'));
     document.getElementById('btn-receipt-finish').addEventListener('click', () => navegarA('screen-home'));
-    document.getElementById('btn-logout')?.addEventListener('click', () => { currentShopId = null; navegarA('screen-home'); });
+    document.getElementById('btn-logout')?.addEventListener('click', () => { currentShopId = null; datosLocalActual = null; navegarA('screen-home'); });
 
     document.getElementById('prev-month').addEventListener('click', async () => { fechaNavegacion.setMonth(fechaNavegacion.getMonth() - 1); diaSeleccionado = null; reservaTemporal.hora = ""; renderizarCalendario(); await renderizarHoras(); });
     document.getElementById('next-month').addEventListener('click', async () => { fechaNavegacion.setMonth(fechaNavegacion.getMonth() + 1); diaSeleccionado = null; reservaTemporal.hora = ""; renderizarCalendario(); await renderizarHoras(); });
@@ -304,7 +281,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('btn-go-to-auth-pay').addEventListener('click', () => {
         if (!diaSeleccionado || !reservaTemporal.hora) return alert('Selecciona un día y una hora disponible para continuar.');
-        document.getElementById('summary-barber').innerText = reservaTemporal.barberNombre; document.getElementById('summary-date').innerText = reservaTemporal.fechaStr; document.getElementById('summary-hour').innerText = reservaTemporal.hora;
+        
+        // NUEVO: Inyectar datos del Pago Móvil de la tienda activa a la vista
+        document.getElementById('pm-show-price').innerText = datosLocalActual.precio_corte || 'Consultar';
+        document.getElementById('pm-show-bank').innerText = datosLocalActual.pago_movil_banco || 'N/A';
+        document.getElementById('pm-show-phone').innerText = datosLocalActual.pago_movil_telefono || 'N/A';
+        document.getElementById('pm-show-cedula').innerText = datosLocalActual.pago_movil_cedula || 'N/A';
+
+        document.getElementById('summary-barber').innerText = reservaTemporal.barberNombre; 
+        document.getElementById('summary-date').innerText = reservaTemporal.fechaStr; 
+        document.getElementById('summary-hour').innerText = reservaTemporal.hora;
         navegarA('screen-auth-payment');
     });
 
@@ -316,9 +302,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         else { cond.style.display = 'block'; document.getElementById('client-name').value = ""; document.getElementById('client-lastname').value = ""; document.getElementById('client-phone').value = ""; }
     });
 
+    // NUEVO: Lógica visual al elegir el método de pago
     document.querySelectorAll('input[name="pay-method"]').forEach(r => r.addEventListener('change', (e) => {
         const refGroup = document.getElementById('reference-group'); const refInput = document.getElementById('pay-reference');
-        if (e.target.value === 'movil') { refGroup.style.display = 'block'; refInput.required = true; } else { refGroup.style.display = 'none'; refInput.required = false; refInput.value = ''; }
+        const pmBox = document.getElementById('pm-info-box');
+        
+        if (e.target.value === 'movil') { 
+            refGroup.style.display = 'block'; refInput.required = true; 
+            pmBox.style.display = 'block'; // Mostrar la cajita de banco
+        } else { 
+            refGroup.style.display = 'none'; refInput.required = false; refInput.value = ''; 
+            pmBox.style.display = 'none'; // Ocultar la cajita
+        }
     }));
 
     document.getElementById('final-booking-form').addEventListener('submit', async (e) => {
@@ -337,6 +332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('rec-uuid').innerText = `CB-${Math.floor(1000 + Math.random() * 9000)}`;
         
         e.target.reset(); document.getElementById('reference-group').style.display = 'none'; document.getElementById('conditional-fields').style.display = 'block';
+        document.getElementById('pm-info-box').style.display = 'none'; // Ocultar por seguridad
         navegarA('screen-ticket-receipt'); 
     });
 
@@ -345,10 +341,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data, error } = await db.from('barberias').select('*').eq('usuario_admin', document.getElementById('login-user').value.trim()).eq('password', document.getElementById('login-pass').value.trim()).single();
         if (error || !data) alert("Usuario o contraseña incorrectos.");
         else { 
-            e.target.reset(); 
-            currentShopId = data.id; 
-            await cargarDashboard(data); 
-            navegarA('screen-admin-dashboard'); 
+            e.target.reset(); currentShopId = data.id; 
+            await cargarDashboard(data); navegarA('screen-admin-dashboard'); 
         }
     });
 
@@ -357,8 +351,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const horarioB1 = generarBloquesHoras(document.getElementById('b1-start').value, document.getElementById('b1-end').value);
         const horarioB2 = generarBloquesHoras(document.getElementById('b2-start').value, document.getElementById('b2-end').value);
 
+        // NUEVO: Envío de los datos de pago y precio a Supabase
         const { data: shopData, error: shopError } = await db.from('barberias').insert({
-            usuario_admin: document.getElementById('admin-user').value.trim(), password: document.getElementById('admin-pass').value.trim(), nombre_local: document.getElementById('shop-reg-name').value, direccion: document.getElementById('shop-reg-dir').value, cantidad_sillas: 2, horario_general: "9:00 AM - 7:00 PM"
+            usuario_admin: document.getElementById('admin-user').value.trim(), password: document.getElementById('admin-pass').value.trim(), 
+            nombre_local: document.getElementById('shop-reg-name').value, direccion: document.getElementById('shop-reg-dir').value, 
+            cantidad_sillas: 2, horario_general: "9:00 AM - 7:00 PM",
+            precio_corte: document.getElementById('shop-reg-price').value.trim(),
+            pago_movil_banco: document.getElementById('shop-reg-bank').value.trim(),
+            pago_movil_telefono: document.getElementById('shop-reg-pm-phone').value.trim(),
+            pago_movil_cedula: document.getElementById('shop-reg-pm-cedula').value.trim()
         }).select().single();
 
         if (shopError) return alert("Error al registrar: " + shopError.message);
