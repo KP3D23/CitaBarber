@@ -43,17 +43,22 @@
                 <h3>Datos del Local</h3>
                 <input type="text" id="shop-reg-name" placeholder="Nombre de la Barbería" required>
                 <input type="text" id="shop-reg-dir" placeholder="Dirección" required>
-                <input type="text" id="admin-user" placeholder="Crea un Usuario" required>
-                <input type="password" id="admin-pass" placeholder="Crea una Contraseña" required>
+                
+                <input type="text" id="admin-user" placeholder="Crea un Usuario (Letras y números)" pattern="^[a-zA-Z0-9]+$" title="Solo letras y números, sin espacios." oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" required>
+                
+                <input type="password" id="admin-pass" placeholder="Crea una Contraseña" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])\S+$" title="Debe contener al menos una mayúscula, un número, un símbolo y cero espacios." required>
                 
                 <h3>Datos de Cobro (Pago Móvil)</h3>
                 <input type="text" id="shop-reg-price" placeholder="Precio del Corte (Ej: $5 o 180 Bs)" required>
-                <input type="text" id="shop-reg-bank" placeholder="Banco (Ej: Banesco)" required>
-                <input type="text" id="shop-reg-pm-phone" placeholder="Teléfono Pago Móvil" required>
-                <input type="text" id="shop-reg-pm-cedula" placeholder="Cédula o RIF" required>
+                
+                <input type="text" id="shop-reg-bank" placeholder="Banco (Ej: Banesco)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+                
+                <input type="text" id="shop-reg-pm-phone" placeholder="Teléfono Pago Móvil (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                
+                <input type="text" id="shop-reg-pm-cedula" placeholder="Cédula o RIF (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
 
                 <h3>Horarios Staff (Barbero 1)</h3>
-                <input type="text" id="b1-name" placeholder="Nombre Barbero 1" required>
+                <input type="text" id="b1-name" placeholder="Nombre Barbero 1 (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
                 <div class="time-group">
                     <label>Apertura:</label>
                     <input type="time" id="b1-start" value="09:00" required>
@@ -62,7 +67,7 @@
                 </div>
 
                 <h3>Horarios Staff (Barbero 2)</h3>
-                <input type="text" id="b2-name" placeholder="Nombre Barbero 2" required>
+                <input type="text" id="b2-name" placeholder="Nombre Barbero 2 (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
                 <div class="time-group">
                     <label>Apertura:</label>
                     <input type="time" id="b2-start" value="09:00" required>
@@ -142,11 +147,14 @@
         <form id="final-booking-form">
             <section class="section-block">
                 <h3>Tus Datos</h3>
-                <input type="number" id="client-cedula" placeholder="Cédula de Identidad" required>
+                
+                <input type="text" id="client-cedula" placeholder="Cédula de Identidad (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                
                 <div id="conditional-fields">
-                    <input type="text" id="client-name" placeholder="Nombre" required>
-                    <input type="text" id="client-lastname" placeholder="Apellido" required>
-                    <input type="tel" id="client-phone" placeholder="Teléfono" required>
+                    <input type="text" id="client-name" placeholder="Nombre (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+                    <input type="text" id="client-lastname" placeholder="Apellido (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
+                    
+                    <input type="text" id="client-phone" placeholder="Teléfono (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
                 </div>
             </section>
             <section class="section-block">
@@ -162,7 +170,7 @@
                 </div>
 
                 <div id="reference-group" style="display:none; margin-top:10px;">
-                    <input type="text" id="pay-reference" placeholder="Últimos 4 dígitos de referencia">
+                    <input type="text" id="pay-reference" placeholder="Últimos dígitos de referencia" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
             </section>
             <button type="submit" class="btn-primary-large" style="margin-top:20px;">Confirmar Cita</button>
