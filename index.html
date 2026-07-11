@@ -3,192 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Barbería</title>
+    <title>Kawaproyects3d - Finanzas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="screen-home" class="app-screen">
+    <div class="app-container">
         <header>
-            <div class="logo">💈 Cita-Barber</div>
-            <button id="btn-admin-panel" class="btn-text">Propietarios 🏢</button>
+            <h1>Kawaproyects3d | Balance</h1>
         </header>
-        <main class="home-main">
-            <h2 style="color: #1a1a24; margin-bottom: 5px;">¿Dónde te vas a cortar hoy?</h2>
-            <p style="margin-bottom: 25px; color: #666;">Selecciona tu local de preferencia</p>
-            
-            <div id="shop-list-container" style="display:flex; flex-direction:column; gap:15px;">
-                <p>Cargando locales disponibles...</p>
+
+        <!-- PANEL DE RESUMEN -->
+        <section class="summary-panel">
+            <div class="card card-deben">
+                <h3>Me Deben / Capital</h3>
+                <p id="total-deben">0.00</p>
             </div>
-        </main>
-    </div>
+            <div class="card card-debo">
+                <h3>Debo / Pasivos</h3>
+                <p id="total-debo">0.00</p>
+            </div>
+            <div class="card card-libres">
+                <h3>Capital Libre</h3>
+                <p id="total-libres">0.00</p>
+            </div>
+        </section>
 
-    <div id="screen-admin-register" class="app-screen" style="display:none;">
-        <div class="admin-tabs">
-            <button id="tab-login-btn" class="active">Iniciar Sesión</button>
-            <button id="tab-register-btn">Registrar Local</button>
-        </div>
-
-        <div id="tab-login-content" class="tab-content">
-            <form id="admin-login-form">
-                <input type="text" id="login-user" placeholder="Usuario" required>
-                <input type="password" id="login-pass" placeholder="Contraseña" required>
-                <button type="submit" class="btn-primary">Entrar al Panel</button>
-                <button type="button" id="btn-cancel-admin" class="btn-secondary">Volver al Inicio</button>
+        <!-- FORMULARIO DE REGISTRO -->
+        <section class="form-section">
+            <h2>Nuevo Registro</h2>
+            <form id="finance-form">
+                <input type="text" id="concepto" placeholder="Concepto (ej: Binance, Zami, Bolsas)" required>
+                <input type="number" step="0.01" id="monto" placeholder="Monto ($)" required>
+                <select id="tipo" required>
+                    <option value="ME_DEBEN">Me Deben / Tengo (Activo)</option>
+                    <option value="DEBO">Debo / Pagar (Pasivo)</option>
+                </select>
+                <button type="submit" class="btn-add">Agregar a la lista</button>
             </form>
-        </div>
-
-        <div id="tab-register-content" class="tab-content" style="display:none;">
-            <form id="admin-shop-form">
-                <h3>Datos del Local</h3>
-                <input type="text" id="shop-reg-name" placeholder="Nombre de la Barbería" required>
-                <input type="text" id="shop-reg-dir" placeholder="Dirección" required>
-                
-                <input type="text" id="admin-user" placeholder="Crea un Usuario (Letras y números)" pattern="^[a-zA-Z0-9]+$" title="Solo letras y números, sin espacios." oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')" required>
-                
-                <input type="password" id="admin-pass" placeholder="Crea una Contraseña" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_])\S+$" title="Debe contener al menos una mayúscula, un número, un símbolo y cero espacios." required>
-                
-                <h3>Datos de Cobro (Pago Móvil)</h3>
-                <input type="text" id="shop-reg-price" placeholder="Precio del Corte (Ej: $5 o 180 Bs)" required>
-                
-                <input type="text" id="shop-reg-bank" placeholder="Banco (Ej: Banesco)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                
-                <input type="text" id="shop-reg-pm-phone" placeholder="Teléfono Pago Móvil (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                
-                <input type="text" id="shop-reg-pm-cedula" placeholder="Cédula o RIF (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-
-                <h3>Horarios Staff (Barbero 1)</h3>
-                <input type="text" id="b1-name" placeholder="Nombre Barbero 1 (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                <div class="time-group">
-                    <label>Apertura:</label>
-                    <input type="time" id="b1-start" value="09:00" required>
-                    <label>Cierre:</label>
-                    <input type="time" id="b1-end" value="18:00" required>
-                </div>
-
-                <h3>Horarios Staff (Barbero 2)</h3>
-                <input type="text" id="b2-name" placeholder="Nombre Barbero 2 (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                <div class="time-group">
-                    <label>Apertura:</label>
-                    <input type="time" id="b2-start" value="09:00" required>
-                    <label>Cierre:</label>
-                    <input type="time" id="b2-end" value="18:00" required>
-                </div>
-                
-                <button type="submit" class="btn-primary">Dar de Alta Plataforma</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="screen-admin-dashboard" class="app-screen" style="display:none;">
-        <header>
-            <h2 id="dashboard-shop-name">Panel de Control</h2>
-            <button id="btn-logout" class="btn-text">Salir 🚪</button>
-        </header>
-        <main style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
-            <section class="section-block" style="background: #fffdf5; border-left: 4px solid gold; border-radius: 8px; padding: 15px;">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📅 Citas de esta Semana</h3>
-                <div id="dashboard-week-list"></div>
-            </section>
-            <section class="section-block" style="background: #fdfbf7; border-left: 4px solid #f39c12; border-radius: 8px; padding: 15px;">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">📆 Citas de este Mes</h3>
-                <div id="dashboard-month-list"></div>
-            </section>
-            <section class="section-block" style="background: #f7f9fd; border-left: 4px solid #2980b9; border-radius: 8px; padding: 15px;">
-                <h3 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">🌍 Citas Lejanas</h3>
-                <div id="dashboard-far-list"></div>
-            </section>
-            <section class="section-block" style="background: #f9f9f9; border-radius: 8px; padding: 15px; border-left: 4px solid #7f8c8d;">
-                <h3 style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">⏳ Historial Reciente</h3>
-                <div id="dashboard-past-list"></div>
-            </section>
-        </main>
-    </div>
-
-    <div id="screen-barbers-calendar" class="app-screen" style="display:none;">
-        <header>
-            <button id="btn-back-to-home" class="btn-back">← Volver</button>
-            <h2>Selecciona tu Turno</h2>
-        </header>
-        <section class="section-block">
-            <h3>1. Elige tu Profesional</h3>
-            <div id="barbers-container" class="horizontal-scroll"></div>
         </section>
-        <section class="section-block">
-            <h3>2. Elige el Día</h3>
-            <div class="calendar-header">
-                <button id="prev-month">❮</button>
-                <span id="month-year-title">Mes Año</span>
-                <button id="next-month">❯</button>
-            </div>
-            <div class="calendar-days-grid" id="calendar-days-grid"></div>
-        </section>
-        <section class="section-block">
-            <h3>3. Elige la Hora</h3>
-            <div class="hours-grid" id="hours-grid-container">
-                <p class="text-muted">Selecciona un día primero.</p>
-            </div>
-        </section>
-        <div class="fixed-bottom-bar">
-            <button id="btn-go-to-auth-pay" class="btn-primary-large">Continuar</button>
-        </div>
-    </div>
 
-    <div id="screen-auth-payment" class="app-screen" style="display:none;">
-        <header>
-            <button id="btn-back-to-calendar" class="btn-back">← Modificar</button>
-            <h2>Confirma tu Reserva</h2>
-        </header>
-        <div class="summary-card">
-            <p><strong>Barbero:</strong> <span id="summary-barber"></span></p>
-            <p><strong>Fecha:</strong> <span id="summary-date"></span></p>
-            <p><strong>Hora:</strong> <span id="summary-hour"></span></p>
-        </div>
-        <form id="final-booking-form">
-            <section class="section-block">
-                <h3>Tus Datos</h3>
-                
-                <input type="text" id="client-cedula" placeholder="Cédula de Identidad (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                
-                <div id="conditional-fields">
-                    <input type="text" id="client-name" placeholder="Nombre (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                    <input type="text" id="client-lastname" placeholder="Apellido (Solo letras)" oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')" required>
-                    
-                    <input type="text" id="client-phone" placeholder="Teléfono (Solo números)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                </div>
-            </section>
-            <section class="section-block">
-                <h3>Método de Pago</h3>
-                <label><input type="radio" name="pay-method" value="sitio" checked> Pago en el Local</label><br>
-                <label><input type="radio" name="pay-method" value="movil"> Pago Móvil</label>
-                
-                <div id="pm-info-box" class="pm-info-box" style="display:none;">
-                    <p><strong>Monto a pagar:</strong> <span id="pm-show-price"></span></p>
-                    <p><strong>Banco:</strong> <span id="pm-show-bank"></span></p>
-                    <p><strong>Teléfono:</strong> <span id="pm-show-phone"></span></p>
-                    <p><strong>Cédula:</strong> <span id="pm-show-cedula"></span></p>
-                </div>
-
-                <div id="reference-group" style="display:none; margin-top:10px;">
-                    <input type="text" id="pay-reference" placeholder="Últimos dígitos de referencia" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                </div>
-            </section>
-            <button type="submit" class="btn-primary-large" style="margin-top:20px;">Confirmar Cita</button>
-        </form>
-    </div>
-
-    <div id="screen-ticket-receipt" class="app-screen" style="display:none; padding:20px;">
-        <div class="ticket-container">
-            <h2>¡Cita Confirmada!</h2>
-            <div class="ticket-details">
-                <p><strong>Ticket ID:</strong> <span id="rec-uuid"></span></p>
-                <p><strong>Cliente C.I:</strong> <span id="rec-client"></span></p>
-                <p><strong>Barbero:</strong> <span id="rec-barber"></span></p>
-                <p><strong>Fecha:</strong> <span id="rec-date"></span></p>
-                <p><strong>Hora:</strong> <span id="rec-hour"></span></p>
-                <p><strong>Pago:</strong> <span id="rec-payment"></span></p>
+        <!-- LISTAS DE DATOS -->
+        <div class="lists-container">
+            <div class="list-block">
+                <h3 class="title-deben">ME DEBEN</h3>
+                <ul id="lista-deben" class="item-list">
+                    <!-- Se llena con JS -->
+                </ul>
             </div>
-            <button id="btn-receipt-finish" class="btn-primary-large" style="margin-top:20px;">Finalizar</button>
+            <div class="list-block">
+                <h3 class="title-debo">DEBO</h3>
+                <ul id="lista-debo" class="item-list">
+                    <!-- Se llena con JS -->
+                </ul>
+            </div>
         </div>
     </div>
 
