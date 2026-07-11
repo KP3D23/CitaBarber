@@ -2,12 +2,23 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaproyects3d | Finanzas</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Carga de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div id="login-screen" class="login-container">...</div> <!-- Tu formulario de login actual -->
 
+    <!-- Pantalla de Login -->
+    <div id="login-screen" class="login-container">
+        <h2>Acceso Privado</h2>
+        <input type="email" id="email" placeholder="Correo">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button id="btn-login">Entrar</button>
+    </div>
+
+    <!-- App Principal -->
     <div id="app-screen" style="display: none;">
         <header class="header">
             <div class="header-top">
@@ -28,31 +39,43 @@
 
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
-            <button id="btn-toggle-list">Ver Detalles</button>
+            <button id="btn-toggle-list">Ver Detalles y Listas</button>
         </div>
 
         <div id="details-section" style="display:none;">
-            <div class="lists-container">...</div> <!-- Tus listas de siempre -->
-            <h2 style="margin-top:20px;">Historial (Recientes)</h2>
-            <ul id="lista-historial"></ul>
-            <button id="btn-ver-mas">Ver más</button>
+            <div class="lists-container">
+                <ul id="lista-deben" class="item-list"></ul>
+                <ul id="lista-debo" class="item-list"></ul>
+            </div>
+            
+            <h2 style="margin-top:20px; font-size: 1rem;">Historial Reciente</h2>
+            <ul id="lista-historial" class="item-list"></ul>
+            <button id="btn-ver-mas" style="width: 100%; margin-top: 10px;">Ver más</button>
         </div>
     </div>
 
     <!-- Modal de Movimiento -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
-            <select id="select-tipo">
-                <option value="GASTO">Gasto</option>
+            <h2>Nuevo Movimiento</h2>
+            <select id="select-tipo" style="width:100%; padding:10px; margin-bottom:10px;">
+                <option value="GASTO">Gasto Externo</option>
                 <option value="INGRESO">Ingreso</option>
                 <option value="PAGO_DEUDA">Pago de Deuda</option>
             </select>
-            <div id="campos-dinamicos"></div>
-            <button id="btn-guardar">Confirmar</button>
+            
+            <div id="campos-dinamicos">
+                <input type="number" id="monto" placeholder="Monto" style="width:100%; padding:10px; margin-bottom:10px;">
+                <input type="text" id="desc" placeholder="Descripción" style="width:100%; padding:10px; margin-bottom:10px;">
+            </div>
+            
+            <div style="display:flex; gap:10px;">
+                <button id="btn-guardar" style="flex:1;">Confirmar</button>
+                <button id="btn-close-modal" style="flex:1; background:#444;">Cancelar</button>
+            </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="app.js"></script>
 </body>
 </html>
