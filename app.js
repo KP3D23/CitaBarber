@@ -79,7 +79,14 @@ async function cargarDatos() {
     const listaDebo = document.getElementById('lista-debo');
     listaDeben.innerHTML = ''; listaDebo.innerHTML = '';
 
-    let totalDeben = 0; let totalDebo = 0;
+    // Estas variables ahora sumarán los montos ORIGINALES, igual que el Excel
+    let sumaTotalDebenOriginal = 0; 
+    let sumaTotalDeboOriginal = 0;
+
+    // Estas variables sumarán los montos CONVERTIDOS solo para el cálculo del Capital Libre
+    let sumaTotalDebenConvertido = 0;
+    let sumaTotalDeboConvertido = 0;
+
     const tasaBcv = parseFloat(inputTasaBcv.value) || 1;
     const tasaUsdt = parseFloat(inputTasaUsdt.value) || 1;
 
@@ -89,6 +96,7 @@ async function cargarDatos() {
         let badgeClase = item.moneda === 'USDT' ? 'badge-usdt' : 'badge-bcv';
         let textoOriginal = item.moneda === 'USDT' ? `Original: $${valorOriginal.toFixed(2)} USDT` : `Original: $${valorOriginal.toFixed(2)} BCV`;
 
+        // Fórmula de conversión: Monto * Tasa Alta / Tasa Baja
         if (item.moneda === 'USDT') {
             valorConvertido = (valorOriginal * tasaUsdt) / tasaBcv;
         }
@@ -108,18 +116,24 @@ async function cargarDatos() {
             </div>
         `;
 
+        // Sumar según el tipo
         if (item.tipo === 'ME_DEBEN') {
-            totalDeben += valorConvertido;
+            sumaTotalDebenOriginal += valorOriginal;      // Para mostrar en la tarjeta roja/verde
+            sumaTotalDebenConvertido += valorConvertido;  // Para calcular el capital libre
             listaDeben.appendChild(li);
         } else {
-            totalDebo += valorConvertido;
+            sumaTotalDeboOriginal += valorOriginal;       // Para mostrar en la tarjeta roja/verde
+            sumaTotalDeboConvertido += valorConvertido;   // Para calcular el capital libre
             listaDebo.appendChild(li);
         }
     });
 
-    const libres = totalDeben - totalDebo;
-    document.getElementById('total-deben').innerText = totalDeben.toFixed(2);
-    document.getElementById('total-debo').innerText = totalDebo.toFixed(2);
+    // El capital libre usa los valores convertidos para ser exacto
+    const libres = sumaTotalDebenConvertido - sumaTotalDeboConvertido;
+
+    // Actualizar los números en pantalla mostrando las sumas ORIGINALES
+    document.getElementById('total-deben').innerText = sumaTotalDebenOriginal.toFixed(2);
+    document.getElementById('total-debo').innerText = sumaTotalDeboOriginal.toFixed(2);
     document.getElementById('total-libres').innerText = libres.toFixed(2);
 }
 
