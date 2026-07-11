@@ -35,7 +35,7 @@ document.getElementById('finance-form').addEventListener('submit', async (e) => 
 
 // Función principal para leer y renderizar
 async function cargarDatos() {
-    const { data, error } = await db.from('finanzas').select('*').order('created_at', { ascending: false });
+    const { data, error } = await db.from('finanzas').select('*').order('fecha', { ascending: false });
     if (error) return console.error("Error al cargar datos:", error);
 
     const listaDeben = document.getElementById('lista-deben');
