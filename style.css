@@ -1,92 +1,39 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background-color: #f4f4f9; color: #333; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #121212; color: #ffffff; padding: 20px; }
 
-/* Contenedor Principal (Simulación de Teléfono) */
-.app-screen { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; position: relative; padding-bottom: 80px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+.app-container { max-width: 900px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+header h1 { color: #4db8ff; }
 
-/* Cabeceras y Botones Superiores */
-header { background: #1a1a24; color: gold; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-header h2 { font-size: 1.2rem; color: #fff; } 
-.logo { font-size: 1.2rem; font-weight: bold; }
-.btn-text, .btn-back { background: none; border: none; color: gold; font-weight: bold; cursor: pointer; font-size: 1rem; }
+/* Tarjetas de Resumen */
+.summary-panel { display: flex; gap: 15px; margin-bottom: 30px; }
+.card { flex: 1; padding: 20px; border-radius: 10px; text-align: center; background: #1e1e1e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+.card h3 { font-size: 1rem; margin-bottom: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+.card p { font-size: 2rem; font-weight: bold; }
+.card-deben p { color: #4CAF50; } /* Verde */
+.card-debo p { color: #F44336; } /* Rojo */
+.card-libres p { color: #FFEB3B; } /* Amarillo */
 
-/* Pantalla de Inicio */
-.home-main { padding: 40px 20px; text-align: center; }
-.hero-card { background: #1a1a24; color: white; padding: 40px 20px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border: 1px solid gold; margin-top: 20px; }
+/* Formulario */
+.form-section { background: #1e1e1e; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+.form-section h2 { margin-bottom: 15px; font-size: 1.2rem; color: #ddd; }
+#finance-form { display: flex; gap: 10px; flex-wrap: wrap; }
+#finance-form input, #finance-form select { flex: 1; min-width: 150px; padding: 12px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 6px; font-size: 1rem; }
+.btn-add { padding: 12px 25px; background: #4db8ff; color: #121212; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+.btn-add:hover { background: #2a9df4; }
 
-/* Botones Generales */
-.btn-primary, .btn-primary-large { background: gold; color: #111; border: none; padding: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-size: 1rem; transition: background 0.3s; }
-.btn-primary:hover, .btn-primary-large:hover { background: #ffd700; }
-.btn-secondary { background: transparent; color: #333; border: 1px solid #ccc; padding: 14px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; }
+/* Listas */
+.lists-container { display: flex; gap: 20px; }
+@media (max-width: 600px) { .lists-container { flex-direction: column; } .summary-panel { flex-direction: column; } }
+.list-block { flex: 1; background: #1e1e1e; border-radius: 10px; padding: 20px; }
+.title-deben { color: #4CAF50; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+.title-debo { color: #F44336; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
 
-/* Pestañas Admin */
-.admin-tabs { display: flex; margin-bottom: 10px; background: #eee; }
-.admin-tabs button { flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #666; transition: 0.3s; }
-.admin-tabs button.active { background: #fff; border-bottom: 3px solid gold; color: #1a1a24; }
-.tab-content, .section-block { padding: 20px; }
-
-/* Formularios y Selectores de Tiempo */
-input[type="text"], input[type="password"], input[type="number"], input[type="tel"] { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; }
-h3 { margin-top: 10px; margin-bottom: 10px; color: #1a1a24; font-size: 1.1rem; }
-.time-group { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
-.time-group label { font-size: 0.9rem; font-weight: bold; color: #555; }
-input[type="time"] { padding: 10px; border: 1px solid #ddd; border-radius: 6px; flex: 1; font-size: 1rem; }
-
-/* Barberos (Scroll Horizontal) */
-.horizontal-scroll { display: flex; gap: 15px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none; }
-.horizontal-scroll::-webkit-scrollbar { display: none; }
-.barber-card { min-width: 100px; text-align: center; border: 2px solid #eee; padding: 15px 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; background: #fafafa; }
-.barber-card .avatar { margin-bottom: 8px; width: 60px; height: 60px; margin-left: auto; margin-right: auto; background: #eee; border-radius: 50%; padding: 5px; }
-.barber-card span { font-weight: bold; font-size: 0.9rem; display: block; }
-.barber-card.active { border-color: gold; background: #fffdf5; box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2); transform: translateY(-2px); }
-
-/* Calendario */
-.calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
-.calendar-header button { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px 10px; }
-.calendar-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
-.calendar-days-grid div { padding: 12px 0; border-radius: 8px; font-size: 0.95rem; transition: 0.2s; }
-.day-off { color: #ccc; text-decoration: line-through; cursor: not-allowed; }
-.day-normal { background: #f9f9f9; cursor: pointer; border: 1px solid #eee; }
-.day-normal:hover { background: #f0f0f0; }
-.day-today { border: 2px solid gold; font-weight: bold; color: #1a1a24; }
-.day-active { background: #1a1a24 !important; color: gold !important; border-color: #1a1a24 !important; font-weight: bold; }
-
-/* Grilla de Horas */
-.hours-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.hour-btn { padding: 12px 5px; border: 1px solid #ddd; background: #fff; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: 0.2s; }
-.hour-btn.available:hover { border-color: gold; background: #fffdf5; }
-.hour-btn.current-select { background: #1a1a24; color: gold; border-color: #1a1a24; font-weight: bold; transform: scale(1.05); }
-.hour-btn:disabled, .hour-btn.disabled { background-color: #f0f0f0; color: #aaa; border-color: #e6e6e6; cursor: not-allowed; text-decoration: line-through; }
-
-/* Barra Inferior Fija (Confirmación) */
-.fixed-bottom-bar { position: fixed; bottom: 0; width: 100%; max-width: 480px; background: white; padding: 15px 20px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); border-top: 1px solid #eee; z-index: 100; }
-.fixed-bottom-bar .btn-primary-large { margin-top: 0; }
-
-/* Resumen y Ticket */
-.summary-card { background: #fffdf5; padding: 15px; border-radius: 8px; margin: 20px; border-left: 4px solid gold; border-right: 1px solid #eee; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
-.summary-card p { margin-bottom: 5px; font-size: 0.95rem; }
-.ticket-container { border: 2px dashed #ccc; text-align: center; background: #fcfcfc; padding: 30px 20px; border-radius: 12px; margin-top: 20px; }
-.ticket-container h2 { color: #1a1a24; margin-bottom: 20px; }
-.ticket-details p { margin-bottom: 8px; font-size: 1rem; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
-.ticket-details p:last-child { border-bottom: none; }
-.text-muted { color: #888; text-align: center; grid-column: span 3; font-style: italic; margin-top: 10px; }
-
-/* Tarjetas del Dashboard de Propietarios */
-.appointment-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s; border-left: 4px solid #1a1a24; }
-.appointment-card:hover { transform: translateX(5px); border-left-color: gold; }
-.appointment-card h4 { margin-bottom: 8px; color: #1a1a24; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; }
-.appointment-card .badge { background: gold; color: #111; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-.appointment-card p { font-size: 0.9rem; color: #555; margin-bottom: 6px; line-height: 1.4; }
-.empty-state { text-align: center; padding: 30px 20px; color: #999; font-style: italic; font-size: 0.95rem; background: #fafafa; border-radius: 8px; border: 1px dashed #ddd; }
-
-/* NUEVO: Tarjetas Multilocal y Botón Cancelar */
-.shop-card { background: #1a1a24; color: white; padding: 25px 20px; border-radius: 12px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); border: 1px solid gold; cursor: pointer; transition: transform 0.2s; text-align: left; }
-.shop-card:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(212, 175, 55, 0.2); }
-.shop-card h3 { color: gold; margin-bottom: 8px; font-size: 1.3rem; }
-.shop-card p { font-size: 0.9rem; margin-bottom: 5px; color: #eee; }
-.btn-danger { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
-.btn-danger:hover { background: #cc0000; }
-
-/* Radios (Método de Pago) */
-label input[type="radio"] { margin-right: 8px; transform: scale(1.2); cursor: pointer; }
-label { cursor: pointer; }
+.item-list { list-style: none; }
+.item-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #333; }
+.item-list li:last-child { border-bottom: none; }
+.item-info { display: flex; flex-direction: column; }
+.item-concepto { font-weight: bold; font-size: 1.1rem; }
+.item-monto { font-size: 1.1rem; }
+.btn-delete { background: none; border: none; color: #888; font-size: 1.2rem; cursor: pointer; padding: 5px; transition: 0.2s; }
+.btn-delete:hover { color: #ff4d4d; }
