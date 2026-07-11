@@ -1,248 +1,102 @@
-/* =========================================
-   RESETEO Y ESTILOS GENERALES
-========================================= */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background-color: #121212;
-    color: #ffffff;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
-}
-
-/* =========================================
-   PANTALLA DE LOGIN
-========================================= */
-.login-container {
-    max-width: 400px;
-    margin: 100px auto;
-    background: #1e1e1e;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    border: 1px solid #333;
-}
-
-.login-container h2 {
-    margin-bottom: 20px;
-    color: #4db8ff;
-}
-
-.login-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #444;
-    background: #2c2c2c;
-    color: white;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-/* =========================================
-   ENCABEZADO (HEADER Y TASAS)
-========================================= */
+/* Centrar el Encabezado y el Botón de Salir */
 .header {
     background: #181818;
     padding: 20px;
     border-radius: 10px;
     border-bottom: 2px solid #333;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .header-top {
+    position: relative;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .header-top h1 {
     font-size: 1.5rem;
     color: #4db8ff;
-}
-
-/* Nuevo estilo para las tasas */
-.rates-panel {
-    display: flex;
-    gap: 15px;
-}
-
-.rate-input-group {
-    display: flex;
-    flex: 1;
-    background: #2c2c2c;
-    border: 1px solid #444;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: border-color 0.3s ease;
-}
-
-.rate-input-group:focus-within {
-    border-color: #4db8ff; /* Se ilumina en azul al escribir */
-}
-
-.rate-label {
-    background: #333;
-    color: #aaa;
-    padding: 10px 15px;
-    font-weight: bold;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    border-right: 1px solid #444;
-    white-space: nowrap;
-}
-
-.rate-input-group input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: white;
-    padding: 10px;
-    font-size: 1rem;
-    outline: none;
-    width: 100%;
-}
-/* =========================================
-   TARJETAS DE BALANCE (DASHBOARD)
-========================================= */
-.summary-panel {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.card {
-    background: #1e1e1e;
-    padding: 15px 10px;
-    border-radius: 8px;
     text-align: center;
-    border: 1px solid #333;
 }
-
-.card h3 {
-    font-size: 0.85rem;
-    color: #aaa;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.card p {
-    font-size: 1.4rem;
-    font-weight: bold;
-}
-
-/* Colores dinámicos para los saldos */
-.card-deben p { color: #4ade80; } /* Verde */
-.card-debo p { color: #f87171; } /* Rojo */
-.card-libres p { color: #facc15; } /* Amarillo */
-
-/* =========================================
-   BOTONES Y ACCIONES
-========================================= */
-.action-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-button {
-    background: #4db8ff;
-    color: #121212;
-    border: none;
-    padding: 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: background 0.2s;
-}
-
-button:hover { background: #3aa1e6; }
-
-button#btn-toggle-list { background: #333; color: white; }
-button#btn-toggle-list:hover { background: #444; }
 
 button#btn-logout { 
+    position: absolute;
+    right: 0;
+    top: -5px;
     background: #f87171; 
     color: #121212; 
     padding: 8px 15px; 
     font-size: 0.9rem; 
 }
-button#btn-logout:hover { background: #ef4444; }
 
-/* =========================================
-   LISTAS E HISTORIAL
-========================================= */
+.rates-panel {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+    justify-content: center;
+}
+
+/* Fila de botones secundarios */
+.action-bar-row {
+    display: flex;
+    gap: 10px;
+}
+.action-bar-row button {
+    flex: 1;
+}
+
+/* Listas uno al lado del otro */
 .lists-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.list-title {
+    font-size: 1rem;
+    color: #aaa;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+/* Estilo para los ítems de las listas (Texto original pequeño, Eq grande) */
+.item-info {
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
-
-.item-list {
-    list-style: none;
-}
-
-.item-list li {
-    background: #1e1e1e;
-    padding: 15px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* =========================================
-   VENTANA EMERGENTE (MODAL)
-========================================= */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85); /* Fondo oscuro transparente */
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #1e1e1e;
-    padding: 25px;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 12px;
-    border: 1px solid #444;
-    
-    /* Centrado perfecto en la pantalla */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.modal-content h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #ffffff;
-}
-
-.modal-content input, 
-.modal-content select {
-    background: #2c2c2c;
-    border: 1px solid #444;
-    color: white;
-    border-radius: 5px;
+.item-concepto {
+    font-weight: bold;
     font-size: 1rem;
+}
+.badge {
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: white;
+    width: fit-content;
+    margin-top: 3px;
+}
+.badge-usdt { background-color: #4db8ff; }
+.badge-bcv { background-color: #555; }
+
+.item-monto-container {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+.monto-original {
+    font-size: 0.75rem;
+    color: #888;
+}
+.monto-convertido {
+    font-size: 1.1rem;
+    font-weight: bold;
 }
