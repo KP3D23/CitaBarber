@@ -1,59 +1,113 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-body { background-color: #121212; color: #ffffff; padding: 20px; }
+/* --- Estilos Generales --- */
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 10px;
+}
 
-.app-container { max-width: 900px; margin: 0 auto; }
-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 15px; }
-header h1 { color: #4db8ff; margin-bottom: 15px; }
+/* --- Encabezado --- */
+.header {
+    background: #181818;
+    padding: 15px;
+    border-bottom: 2px solid #333;
+    margin-bottom: 20px;
+}
 
-/* Tasas de Cambio */
-.rates-panel { display: flex; justify-content: center; gap: 20px; background: #1e1e1e; padding: 10px; border-radius: 8px; display: inline-flex; border: 1px solid #333; }
-.rate-input { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 0.9rem; color: #aaa; }
-.rate-input input { background: #2c2c2c; border: 1px solid #4db8ff; color: #fff; padding: 5px 10px; border-radius: 4px; width: 80px; font-weight: bold; text-align: center; }
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-/* Tarjetas de Resumen */
-.summary-panel { display: flex; gap: 15px; margin-bottom: 30px; }
-.card { flex: 1; padding: 20px; border-radius: 10px; text-align: center; background: #1e1e1e; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-.card h3 { font-size: 0.9rem; margin-bottom: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-.card p { font-size: 2rem; font-weight: bold; }
-.card-deben p { color: #4CAF50; } 
-.card-debo p { color: #F44336; } 
-.card-libres p { color: #FFEB3B; } 
+.rates-panel {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
 
-/* Formulario */
-.form-section { background: #1e1e1e; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
-.form-section h2 { margin-bottom: 15px; font-size: 1.2rem; color: #ddd; }
-#finance-form { display: flex; gap: 10px; flex-wrap: wrap; }
-#finance-form input, #finance-form select { flex: 1; min-width: 130px; padding: 12px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 6px; font-size: 0.95rem; }
-.btn-add { padding: 12px 25px; background: #4db8ff; color: #121212; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-.btn-add:hover { background: #2a9df4; }
+.rates-panel input {
+    background: #2c2c2c;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    width: 100%;
+}
 
-/* Listas y Badges de Moneda */
-.lists-container { display: flex; gap: 20px; }
-@media (max-width: 650px) { .lists-container, .summary-panel { flex-direction: column; } }
-.list-block { flex: 1; background: #1e1e1e; border-radius: 10px; padding: 20px; }
-.title-deben { color: #4CAF50; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
-.title-debo { color: #F44336; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+/* --- Tarjetas de Balance --- */
+.summary-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-.item-list { list-style: none; }
-.item-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #333; }
-.item-list li:last-child { border-bottom: none; }
-.item-info { display: flex; flex-direction: column; gap: 5px; }
-.item-concepto { font-weight: bold; font-size: 1.05rem; }
-.badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; width: max-content; }
-.badge-usdt { background: #4db8ff; color: #000; } /* Azul tipo Excel */
-.badge-bcv { background: #444; color: #ddd; }
+.card {
+    background: #1e1e1e;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #333;
+}
 
-.item-monto-container { text-align: right; }
-.monto-original { font-size: 0.85rem; color: #888; display: block; }
-.monto-convertido { font-size: 1.15rem; font-weight: bold; }
-.btn-delete { background: none; border: none; color: #888; font-size: 1.2rem; cursor: pointer; padding: 5px; margin-left: 10px; transition: 0.2s; }
-.btn-delete:hover { color: #ff4d4d; }
+.card h3 { font-size: 0.8rem; color: #888; margin: 0; }
+.card p { font-size: 1.2rem; font-weight: bold; margin: 5px 0 0 0; }
 
-/* Login Screen */
-.login-container { max-width: 400px; margin: 100px auto; background: #1e1e1e; padding: 40px 30px; border-radius: 10px; text-align: center; border: 1px solid #333; }
-#login-form { display: flex; flex-direction: column; gap: 15px; }
-#login-form input { padding: 12px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 6px; font-size: 1rem; }
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
-.modal-content { background: #1e1e1e; margin: 15% auto; padding: 20px; width: 80%; border-radius: 10px; }
-.btn-main { background: #4db8ff; padding: 15px; border: none; border-radius: 8px; width: 100%; }
-.header { position: sticky; top: 0; background: #121212; padding-bottom: 10px; border-bottom: 1px solid #333; }
+/* --- Botones y Acciones --- */
+.action-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    background: #4db8ff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button#btn-toggle-list { background: #444; }
+
+/* --- Ventana Emergente (Modal) --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1e1e1e;
+    margin: 20% auto;
+    padding: 20px;
+    width: 85%;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+/* --- Listas y Detalles --- */
+.lists-container {
+    background: #181818;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.item-list { list-style: none; padding: 0; }
+.item-list li {
+    background: #252525;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
