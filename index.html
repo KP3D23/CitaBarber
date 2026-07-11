@@ -8,68 +8,76 @@
 </head>
 <body>
     <div class="app-container">
-        <header>
-            <h1>Kawaproyects3d | Balance</h1>
-            
-            <!-- PANEL DE TASAS DE CAMBIO -->
-            <div class="rates-panel">
-                <div class="rate-input">
-                    <label>Tasa BCV (Bs):</label>
-                    <input type="number" step="0.01" id="tasa-bcv" value="36.50">
-                </div>
-                <div class="rate-input">
-                    <label>Tasa USDT (Bs):</label>
-                    <input type="number" step="0.01" id="tasa-usdt" value="40.00">
-                </div>
-            </div>
-        </header>
-
-        <!-- PANEL DE RESUMEN (Todo en Dólar BCV) -->
-        <section class="summary-panel">
-            <div class="card card-deben">
-                <h3>Me Deben (Eq. BCV)</h3>
-                <p id="total-deben">0.00</p>
-            </div>
-            <div class="card card-debo">
-                <h3>Debo (Eq. BCV)</h3>
-                <p id="total-debo">0.00</p>
-            </div>
-            <div class="card card-libres">
-                <h3>Capital Libre</h3>
-                <p id="total-libres">0.00</p>
-            </div>
-        </section>
-
-        <!-- FORMULARIO DE REGISTRO -->
-        <section class="form-section">
-            <h2>Nuevo Registro</h2>
-            <form id="finance-form">
-                <input type="text" id="concepto" placeholder="Concepto (ej: Binance, Zami)" required>
-                <input type="number" step="0.01" id="monto" placeholder="Monto Original ($)" required>
-                
-                <!-- SELECTOR DE MONEDA -->
-                <select id="moneda" required>
-                    <option value="BCV">Dólar BCV (Tasa Baja)</option>
-                    <option value="USDT">Dólar USDT (Tasa Alta)</option>
-                </select>
-
-                <select id="tipo" required>
-                    <option value="ME_DEBEN">Me Deben / Tengo (Activo)</option>
-                    <option value="DEBO">Debo / Pagar (Pasivo)</option>
-                </select>
-                <button type="submit" class="btn-add">Agregar</button>
+        
+        <!-- PANTALLA DE INICIO DE SESIÓN -->
+        <div id="login-screen" class="login-container">
+            <h1 style="color:#4db8ff; margin-bottom: 20px;">Acceso Privado</h1>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Correo electrónico" required>
+                <input type="password" id="login-password" placeholder="Contraseña" required>
+                <button type="submit" class="btn-add" style="width: 100%;">Entrar</button>
             </form>
-        </section>
+        </div>
 
-        <!-- LISTAS DE DATOS -->
-        <div class="lists-container">
-            <div class="list-block">
-                <h3 class="title-deben">ME DEBEN</h3>
-                <ul id="lista-deben" class="item-list"></ul>
-            </div>
-            <div class="list-block">
-                <h3 class="title-debo">DEBO</h3>
-                <ul id="lista-debo" class="item-list"></ul>
+        <!-- PANTALLA PRINCIPAL DE FINANZAS (Oculta por defecto) -->
+        <div id="app-screen" style="display: none;">
+            <header>
+                <h1>Kawaproyects3d | Balance</h1>
+                <div class="rates-panel">
+                    <div class="rate-input">
+                        <label>Tasa BCV (Bs):</label>
+                        <input type="number" step="0.01" id="tasa-bcv" value="36.50">
+                    </div>
+                    <div class="rate-input">
+                        <label>Tasa USDT (Bs):</label>
+                        <input type="number" step="0.01" id="tasa-usdt" value="40.00">
+                    </div>
+                </div>
+                <!-- Botón para cerrar sesión si lo necesitas -->
+                <button id="btn-logout" style="background:none; border:none; color:#F44336; cursor:pointer; margin-top:15px; font-weight:bold;">Cerrar Sesión 🚪</button>
+            </header>
+
+            <section class="summary-panel">
+                <div class="card card-deben">
+                    <h3>Me Deben (Eq. BCV)</h3>
+                    <p id="total-deben">0.00</p>
+                </div>
+                <div class="card card-debo">
+                    <h3>Debo (Eq. BCV)</h3>
+                    <p id="total-debo">0.00</p>
+                </div>
+                <div class="card card-libres">
+                    <h3>Capital Libre</h3>
+                    <p id="total-libres">0.00</p>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>Nuevo Registro</h2>
+                <form id="finance-form">
+                    <input type="text" id="concepto" placeholder="Concepto (ej: Binance, Zami)" required>
+                    <input type="number" step="0.01" id="monto" placeholder="Monto Original ($)" required>
+                    <select id="moneda" required>
+                        <option value="BCV">Dólar BCV (Tasa Baja)</option>
+                        <option value="USDT">Dólar USDT (Tasa Alta)</option>
+                    </select>
+                    <select id="tipo" required>
+                        <option value="ME_DEBEN">Me Deben / Tengo (Activo)</option>
+                        <option value="DEBO">Debo / Pagar (Pasivo)</option>
+                    </select>
+                    <button type="submit" class="btn-add">Agregar</button>
+                </form>
+            </section>
+
+            <div class="lists-container">
+                <div class="list-block">
+                    <h3 class="title-deben">ME DEBEN</h3>
+                    <ul id="lista-deben" class="item-list"></ul>
+                </div>
+                <div class="list-block">
+                    <h3 class="title-debo">DEBO</h3>
+                    <ul id="lista-debo" class="item-list"></ul>
+                </div>
             </div>
         </div>
     </div>
