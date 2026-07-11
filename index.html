@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaproyects3d | Finanzas</title>
+    
+    <!-- Enlace a los estilos -->
     <link rel="stylesheet" href="style.css">
-    <!-- Carga de Supabase -->
+    
+    <!-- Librería de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -18,8 +21,10 @@
         <button id="btn-login">Entrar</button>
     </div>
 
-    <!-- App Principal -->
+    <!-- App Principal (Oculta hasta iniciar sesión) -->
     <div id="app-screen" style="display: none;">
+        
+        <!-- Encabezado con botones y tasas -->
         <header class="header">
             <div class="header-top">
                 <h1>Kawaproyects3d</h1>
@@ -31,17 +36,29 @@
             </div>
         </header>
 
+        <!-- Tarjetas de Resumen -->
         <section class="summary-panel">
-            <div class="card card-deben"><h3>Me Deben</h3><p id="total-deben">0.00</p></div>
-            <div class="card card-debo"><h3>Debo</h3><p id="total-debo">0.00</p></div>
-            <div class="card card-libres"><h3>Capital</h3><p id="total-libres">0.00</p></div>
+            <div class="card card-deben">
+                <h3>Me Deben</h3>
+                <p id="total-deben">0.00</p>
+            </div>
+            <div class="card card-debo">
+                <h3>Debo</h3>
+                <p id="total-debo">0.00</p>
+            </div>
+            <div class="card card-libres">
+                <h3>Capital</h3>
+                <p id="total-libres">0.00</p>
+            </div>
         </section>
 
+        <!-- Botones Principales -->
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
-            <button id="btn-toggle-list">Ver Detalles y Listas</button>
+            <button id="btn-toggle-list" class="btn-sec">Ver Detalles y Listas</button>
         </div>
 
+        <!-- Sección de Listas e Historial (Oculta por defecto) -->
         <div id="details-section" style="display:none;">
             <div class="lists-container">
                 <ul id="lista-deben" class="item-list"></ul>
@@ -54,7 +71,7 @@
         </div>
     </div>
 
-    <!-- Modal de Movimiento -->
+    <!-- Modal (Ventana Emergente) de Movimientos -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
             <h2>Nuevo Movimiento</h2>
@@ -64,18 +81,20 @@
                 <option value="PAGO_DEUDA">Pago de Deuda</option>
             </select>
             
+            <!-- Contenedor dinámico controlado por app.js -->
             <div id="campos-dinamicos">
                 <input type="number" id="monto" placeholder="Monto" style="width:100%; padding:10px; margin-bottom:10px;">
                 <input type="text" id="desc" placeholder="Descripción" style="width:100%; padding:10px; margin-bottom:10px;">
             </div>
             
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; margin-top: 10px;">
                 <button id="btn-guardar" style="flex:1;">Confirmar</button>
                 <button id="btn-close-modal" style="flex:1; background:#444;">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <!-- Enlace a la lógica de JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
