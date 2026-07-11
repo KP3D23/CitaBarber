@@ -19,12 +19,18 @@ const inputTasaUsdt = document.getElementById('tasa-usdt');
 // ==========================================
 // 3. AUTENTICACIÓN Y SESIÓN
 // ==========================================
+// ==========================================
+// 3. AUTENTICACIÓN Y SESIÓN (Forzar Login)
+// ==========================================
 document.addEventListener('DOMContentLoaded', async () => {
-    // Revisar si ya hay alguien logueado
     const { data: { session } } = await db.auth.getSession();
     
     if (session) {
         mostrarApp();
+    } else {
+        // Bloqueo explícito si no hay sesión
+        document.getElementById('login-screen').style.display = 'block';
+        document.getElementById('app-screen').style.display = 'none';
     }
 });
 
@@ -64,23 +70,18 @@ inputTasaUsdt.addEventListener('input', cargarDatos);
 
 
 // ==========================================
-// 4. LÓGICA DE VENTANAS EMERGENTES (MODALES)
+// 4. LÓGICA DE BOTONES (Listas e Historial)
 // ==========================================
-document.getElementById('btn-open-modal').onclick = () => {
-    modal.style.display = 'block';
-};
-
-document.getElementById('btn-close-modal').onclick = () => {
-    modal.style.display = 'none';
-};
+const historialSection = document.getElementById('historial-section');
 
 document.getElementById('btn-toggle-list').onclick = () => {
-    // Si está oculto lo muestra, si está visible lo oculta
-    if (detallesSection.style.display === 'none') {
-        detallesSection.style.display = 'block';
-    } else {
-        detallesSection.style.display = 'none';
-    }
+    detallesSection.style.display = detallesSection.style.display === 'none' ? 'block' : 'none';
+    historialSection.style.display = 'none'; // Ocultar el otro
+};
+
+document.getElementById('btn-toggle-historial').onclick = () => {
+    historialSection.style.display = historialSection.style.display === 'none' ? 'block' : 'none';
+    detallesSection.style.display = 'none'; // Ocultar el otro
 };
 
 // ==========================================
@@ -154,7 +155,7 @@ document.getElementById('btn-guardar').onclick = async () => {
 
 
 // ==========================================
-// 7. CARGAR SALDOS (Lógica de conversión exacta)
+// 7. CARGAR SALDOS (Tasas afectan TODO y formato visual)
 // ==========================================
 async function cargarDatos() {
     const { data, error } = await db.from('finanzas').select('*');
@@ -165,37 +166,39 @@ async function cargarDatos() {
     listaDeben.innerHTML = ''; 
     listaDebo.innerHTML = '';
 
-    let sumaTotalDebenOriginal = 0; 
-    let sumaTotalDeboOriginal = 0;
     let sumaTotalDebenConvertido = 0;
     let sumaTotalDeboConvertido = 0;
 
-    const tasaBcv = parseFloat(inputTasaBcv.value) || 1;
-    const tasaUsdt = parseFloat(inputTasaUsdt.value) || 1;
+    const tasaBcv = parseFloat(document.getElementById('tasa-bcv').value) || 1;
+    const tasaUsdt = parseFloat(document.getElementById('tasa-usdt').value) || 1;
 
     data.forEach(item => {
         let valorOriginal = parseFloat(item.monto);
         let valorConvertido = valorOriginal;
+        let badgeClase = item.moneda === 'USDT' ? 'badge-usdt' : 'badge-bcv';
+        let textoOriginal = item.moneda === 'USDT' ? `Original: $${valorOriginal.toFixed(2)} USDT` : `Original: $${valorOriginal.toFixed(2)} BCV`;
         
+        // Conversión matemática
         if (item.moneda === 'USDT') {
             valorConvertido = (valorOriginal * tasaUsdt) / tasaBcv;
         }
 
         const li = document.createElement('li');
         li.innerHTML = `
-            <div>
-                <strong>${item.concepto}</strong> 
-                <span style="color:#888; font-size:0.8rem;">(${item.moneda})</span>
+            <div class="item-info">
+                <span class="item-concepto">${item.concepto}</span>
+                <span class="badge ${badgeClase}">${item.moneda}</span>
             </div>
-            <div>$${valorOriginal.toFixed(2)}</div>
+            <div class="item-monto-container">
+                <span class="monto-original">${textoOriginal}</span>
+                <span class="monto-convertido">Eq: $${valorConvertido.toFixed(2)}</span>
+            </div>
         `;
 
         if (item.tipo === 'ME_DEBEN') {
-            sumaTotalDebenOriginal += valorOriginal;
             sumaTotalDebenConvertido += valorConvertido;
             listaDeben.appendChild(li);
         } else {
-            sumaTotalDeboOriginal += valorOriginal;
             sumaTotalDeboConvertido += valorConvertido;
             listaDebo.appendChild(li);
         }
@@ -203,11 +206,10 @@ async function cargarDatos() {
 
     const libres = sumaTotalDebenConvertido - sumaTotalDeboConvertido;
 
-    document.getElementById('total-deben').innerText = sumaTotalDebenOriginal.toFixed(2);
-    document.getElementById('total-debo').innerText = sumaTotalDeboOriginal.toFixed(2);
+    // Ahora las 3 tarjetas usan los montos CONVERTIDOS (Afectados por la tasa)
+    document.getElementById('total-deben').innerText = sumaTotalDebenConvertido.toFixed(2);
+    document.getElementById('total-debo').innerText = sumaTotalDeboConvertido.toFixed(2);
     document.getElementById('total-libres').innerText = libres.toFixed(2);
-}
-
 
 // ==========================================
 // 8. CARGAR HISTORIAL
