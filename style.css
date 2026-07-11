@@ -1,16 +1,55 @@
-/* --- Estilos Generales --- */
+/* =========================================
+   RESETEO Y ESTILOS GENERALES
+========================================= */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background-color: #121212;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 10px;
+    padding: 20px;
 }
 
-/* --- Encabezado --- */
+/* =========================================
+   PANTALLA DE LOGIN
+========================================= */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #333;
+}
+
+.login-container h2 {
+    margin-bottom: 20px;
+    color: #4db8ff;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #444;
+    background: #2c2c2c;
+    color: white;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* =========================================
+   ENCABEZADO (HEADER Y TASAS)
+========================================= */
 .header {
     background: #181818;
-    padding: 15px;
+    padding: 20px;
+    border-radius: 10px;
     border-bottom: 2px solid #333;
     margin-bottom: 20px;
 }
@@ -19,62 +58,127 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-top h1 {
+    font-size: 1.5rem;
+    color: #4db8ff;
 }
 
 .rates-panel {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 15px;
 }
 
 .rates-panel input {
+    flex: 1;
     background: #2c2c2c;
     border: 1px solid #444;
     color: white;
-    padding: 8px;
+    padding: 10px;
     border-radius: 5px;
-    width: 100%;
+    font-size: 1rem;
 }
 
-/* --- Tarjetas de Balance --- */
+/* =========================================
+   TARJETAS DE BALANCE (DASHBOARD)
+========================================= */
 .summary-panel {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .card {
     background: #1e1e1e;
-    padding: 10px;
+    padding: 15px 10px;
     border-radius: 8px;
     text-align: center;
     border: 1px solid #333;
 }
 
-.card h3 { font-size: 0.8rem; color: #888; margin: 0; }
-.card p { font-size: 1.2rem; font-weight: bold; margin: 5px 0 0 0; }
+.card h3 {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-/* --- Botones y Acciones --- */
+.card p {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* Colores dinámicos para los saldos */
+.card-deben p { color: #4ade80; } /* Verde */
+.card-debo p { color: #f87171; } /* Rojo */
+.card-libres p { color: #facc15; } /* Amarillo */
+
+/* =========================================
+   BOTONES Y ACCIONES
+========================================= */
 .action-bar {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 button {
     background: #4db8ff;
-    color: white;
+    color: #121212;
     border: none;
-    padding: 12px;
-    border-radius: 6px;
+    padding: 14px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+    font-size: 1rem;
+    transition: background 0.2s;
 }
 
-button#btn-toggle-list { background: #444; }
+button:hover { background: #3aa1e6; }
 
-/* --- Ventana Emergente (Modal) --- */
+button#btn-toggle-list { background: #333; color: white; }
+button#btn-toggle-list:hover { background: #444; }
+
+button#btn-logout { 
+    background: #f87171; 
+    color: #121212; 
+    padding: 8px 15px; 
+    font-size: 0.9rem; 
+}
+button#btn-logout:hover { background: #ef4444; }
+
+/* =========================================
+   LISTAS E HISTORIAL
+========================================= */
+.lists-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.item-list {
+    list-style: none;
+}
+
+.item-list li {
+    background: #1e1e1e;
+    padding: 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =========================================
+   VENTANA EMERGENTE (MODAL)
+========================================= */
 .modal {
     display: none;
     position: fixed;
@@ -82,32 +186,36 @@ button#btn-toggle-list { background: #444; }
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.85); /* Fondo oscuro transparente */
     z-index: 1000;
 }
 
 .modal-content {
     background: #1e1e1e;
-    margin: 20% auto;
-    padding: 20px;
-    width: 85%;
-    border-radius: 10px;
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 12px;
     border: 1px solid #444;
+    
+    /* Centrado perfecto en la pantalla */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-/* --- Listas y Detalles --- */
-.lists-container {
-    background: #181818;
-    padding: 15px;
-    border-radius: 8px;
+.modal-content h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ffffff;
 }
 
-.item-list { list-style: none; padding: 0; }
-.item-list li {
-    background: #252525;
-    padding: 10px;
-    margin-bottom: 5px;
+.modal-content input, 
+.modal-content select {
+    background: #2c2c2c;
+    border: 1px solid #444;
+    color: white;
     border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
+    font-size: 1rem;
 }
