@@ -66,21 +66,48 @@ body {
     color: #4db8ff;
 }
 
+/* Nuevo estilo para las tasas */
 .rates-panel {
     display: flex;
     gap: 15px;
 }
 
-.rates-panel input {
+.rate-input-group {
+    display: flex;
     flex: 1;
     background: #2c2c2c;
     border: 1px solid #444;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
 }
 
+.rate-input-group:focus-within {
+    border-color: #4db8ff; /* Se ilumina en azul al escribir */
+}
+
+.rate-label {
+    background: #333;
+    color: #aaa;
+    padding: 10px 15px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #444;
+    white-space: nowrap;
+}
+
+.rate-input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+}
 /* =========================================
    TARJETAS DE BALANCE (DASHBOARD)
 ========================================= */
