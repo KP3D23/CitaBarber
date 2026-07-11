@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaproyects3d | Finanzas</title>
-    
-    <!-- Enlace a los estilos -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Librería de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -24,25 +20,23 @@
     <!-- App Principal (Oculta hasta iniciar sesión) -->
     <div id="app-screen" style="display: none;">
         
-        <!-- Encabezado con botones y tasas -->
         <header class="header">
             <div class="header-top">
                 <h1>Kawaproyects3d</h1>
                 <button id="btn-logout">Salir 🚪</button>
             </div>
-           <div class="rates-panel">
-    <div class="rate-input-group">
-        <span class="rate-label">Tasa BCV</span>
-        <input type="number" id="tasa-bcv" placeholder="0.00">
-    </div>
-    <div class="rate-input-group">
-        <span class="rate-label">Tasa USDT</span>
-        <input type="number" id="tasa-usdt" placeholder="0.00">
-    </div>
-</div>
+            <div class="rates-panel">
+                <div class="rate-input-group">
+                    <span class="rate-label">Tasa BCV</span>
+                    <input type="number" id="tasa-bcv" placeholder="0.00">
+                </div>
+                <div class="rate-input-group">
+                    <span class="rate-label">Tasa USDT</span>
+                    <input type="number" id="tasa-usdt" placeholder="0.00">
+                </div>
+            </div>
         </header>
 
-        <!-- Tarjetas de Resumen -->
         <section class="summary-panel">
             <div class="card card-deben">
                 <h3>Me Deben</h3>
@@ -61,23 +55,35 @@
         <!-- Botones Principales -->
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
-            <button id="btn-toggle-list" class="btn-sec">Ver Detalles y Listas</button>
+            <div class="action-bar-row">
+                <button id="btn-toggle-list" class="btn-sec">Ver Detalles y Listas</button>
+                <button id="btn-toggle-historial" class="btn-sec">Ver Historial</button>
+            </div>
         </div>
 
-        <!-- Sección de Listas e Historial (Oculta por defecto) -->
+        <!-- Sección de Listas (Lado a lado) -->
         <div id="details-section" style="display:none;">
             <div class="lists-container">
-                <ul id="lista-deben" class="item-list"></ul>
-                <ul id="lista-debo" class="item-list"></ul>
+                <div class="list-column">
+                    <h2 class="list-title">Me Deben</h2>
+                    <ul id="lista-deben" class="item-list"></ul>
+                </div>
+                <div class="list-column">
+                    <h2 class="list-title">Debo</h2>
+                    <ul id="lista-debo" class="item-list"></ul>
+                </div>
             </div>
-            
-            <h2 style="margin-top:20px; font-size: 1rem;">Historial Reciente</h2>
+        </div>
+
+        <!-- Sección de Historial -->
+        <div id="historial-section" style="display:none; margin-top:20px;">
+            <h2 style="font-size: 1.2rem; margin-bottom:15px; text-align:center;">Historial Reciente</h2>
             <ul id="lista-historial" class="item-list"></ul>
-            <button id="btn-ver-mas" style="width: 100%; margin-top: 10px;">Ver más</button>
+            <button id="btn-ver-mas" style="width: 100%; margin-top: 10px; background:#333;">Ver más</button>
         </div>
     </div>
 
-    <!-- Modal (Ventana Emergente) de Movimientos -->
+    <!-- Modal (Ventana Emergente) -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
             <h2>Nuevo Movimiento</h2>
@@ -87,7 +93,6 @@
                 <option value="PAGO_DEUDA">Pago de Deuda</option>
             </select>
             
-            <!-- Contenedor dinámico controlado por app.js -->
             <div id="campos-dinamicos">
                 <input type="number" id="monto" placeholder="Monto" style="width:100%; padding:10px; margin-bottom:10px;">
                 <input type="text" id="desc" placeholder="Descripción" style="width:100%; padding:10px; margin-bottom:10px;">
@@ -100,7 +105,6 @@
         </div>
     </div>
 
-    <!-- Enlace a la lógica de JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
