@@ -1,6 +1,6 @@
 // CONFIGURACIÓN SUPABASE (Recuerda poner tus llaves)
-const supabaseUrl = 'TU_URL';
-const supabaseKey = 'TU_ANON_KEY'; 
+const supabaseUrl = 'https://tecasjijlodgsvkgdqvs.supabase.co';
+const supabaseKey = 'sb_publishable_Eg0bMHVcqHtkBXMuH-lAIA_cTmO99Qw'; 
 const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Referencias a los inputs de tasas
