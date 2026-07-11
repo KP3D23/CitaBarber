@@ -12,25 +12,24 @@ const loginScreen = document.getElementById('login-screen');
 const appScreen = document.getElementById('app-screen');
 const modal = document.getElementById('modal-movimiento');
 const detallesSection = document.getElementById('details-section');
+const historialSection = document.getElementById('historial-section');
 
 const inputTasaBcv = document.getElementById('tasa-bcv');
 const inputTasaUsdt = document.getElementById('tasa-usdt');
 
 // ==========================================
-// 3. AUTENTICACIÓN Y SESIÓN
-// ==========================================
-// ==========================================
 // 3. AUTENTICACIÓN Y SESIÓN (Forzar Login)
 // ==========================================
 document.addEventListener('DOMContentLoaded', async () => {
+    // Revisar si ya hay alguien logueado
     const { data: { session } } = await db.auth.getSession();
     
     if (session) {
         mostrarApp();
     } else {
         // Bloqueo explícito si no hay sesión
-        document.getElementById('login-screen').style.display = 'block';
-        document.getElementById('app-screen').style.display = 'none';
+        loginScreen.style.display = 'block';
+        appScreen.style.display = 'none';
     }
 });
 
@@ -68,20 +67,25 @@ function mostrarApp() {
 inputTasaBcv.addEventListener('input', cargarDatos);
 inputTasaUsdt.addEventListener('input', cargarDatos);
 
+// ==========================================
+// 4. LÓGICA DE VENTANAS Y BOTONES
+// ==========================================
+document.getElementById('btn-open-modal').onclick = () => {
+    modal.style.display = 'block';
+};
 
-// ==========================================
-// 4. LÓGICA DE BOTONES (Listas e Historial)
-// ==========================================
-const historialSection = document.getElementById('historial-section');
+document.getElementById('btn-close-modal').onclick = () => {
+    modal.style.display = 'none';
+};
 
 document.getElementById('btn-toggle-list').onclick = () => {
     detallesSection.style.display = detallesSection.style.display === 'none' ? 'block' : 'none';
-    historialSection.style.display = 'none'; // Ocultar el otro
+    historialSection.style.display = 'none'; // Ocultar el historial si se abren las listas
 };
 
 document.getElementById('btn-toggle-historial').onclick = () => {
     historialSection.style.display = historialSection.style.display === 'none' ? 'block' : 'none';
-    detallesSection.style.display = 'none'; // Ocultar el otro
+    detallesSection.style.display = 'none'; // Ocultar las listas si se abre el historial
 };
 
 // ==========================================
@@ -210,6 +214,8 @@ async function cargarDatos() {
     document.getElementById('total-deben').innerText = sumaTotalDebenConvertido.toFixed(2);
     document.getElementById('total-debo').innerText = sumaTotalDeboConvertido.toFixed(2);
     document.getElementById('total-libres').innerText = libres.toFixed(2);
+}
+
 
 // ==========================================
 // 8. CARGAR HISTORIAL
