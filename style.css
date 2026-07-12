@@ -48,7 +48,7 @@ button#btn-logout:hover { background: #ef4444; }
     flex: 1; background: transparent; border: none; color: white; padding: 10px; font-size: 1rem; outline: none; width: 100%;
 }
 
-/* DASHBOARD REORDENADO */
+/* DASHBOARD */
 .summary-panel {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px;
 }
@@ -63,7 +63,6 @@ button#btn-logout:hover { background: #ef4444; }
 .card-debo p { color: #f87171; } 
 .card-libres p { color: #facc15; }
 
-/* Botones rápidos en las tarjetas */
 .btn-quick {
     background: #333; color: #aaa; border: 1px solid #444; padding: 5px;
     border-radius: 5px; font-size: 0.75rem; cursor: pointer; transition: 0.2s;
@@ -114,3 +113,134 @@ button#btn-logout:hover { background: #ef4444; }
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
 .modal-content h2 { margin-bottom: 20px; text-align: center; color: #ffffff; }
+
+/* =========================================
+   NUEVAS MEJORAS (SOLO LO NECESARIO)
+========================================= */
+
+/* Notificaciones */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(100px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #1e1e1e;
+    border-left: 4px solid #4db8ff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 9999;
+    max-width: 350px;
+    animation: slideIn 0.3s ease;
+    font-size: 0.95rem;
+    border: 1px solid #333;
+}
+
+/* Botones de acción en listas */
+.item-actions {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.btn-icon {
+    background: #333;
+    border: 1px solid #444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: #4db8ff;
+    color: #121212;
+    border-color: #4db8ff;
+}
+
+.btn-icon:last-child:hover {
+    background: #f87171;
+    border-color: #f87171;
+}
+
+/* Guardado de tasas */
+.rate-input-group.saved {
+    border-color: #4ade80 !important;
+    transition: border-color 0.3s;
+}
+
+/* Botón cargar más historial */
+#btn-load-more {
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .summary-panel {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .lists-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+    }
+    .rates-panel {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .action-bar-row {
+        flex-direction: column;
+    }
+}
+
+/* =========================================
+   INDICADOR DE ESTADO DE TASAS
+========================================= */
+.rate-input-group {
+    display: flex; 
+    flex: 1; 
+    background: #2c2c2c; 
+    border: 1px solid #444;
+    border-radius: 8px; 
+    overflow: hidden; 
+    transition: border-color 0.3s ease;
+    position: relative;
+}
+
+.rate-status {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.rate-status.saving {
+    color: #facc15;
+    animation: pulse 0.5s ease infinite;
+}
+
+.rate-status.saved {
+    color: #4ade80;
+}
+
+.rate-status.error {
+    color: #f87171;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}

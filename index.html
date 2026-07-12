@@ -17,7 +17,7 @@
         <button id="btn-login" class="btn-main">Entrar</button>
     </div>
 
-    <!-- App Principal -->
+    <!-- App Principal - TU DISEÑO ORIGINAL -->
     <div id="app-screen" style="display: none;">
         
         <header class="header">
@@ -29,30 +29,32 @@
                 <div class="rate-input-group">
                     <span class="rate-label">Tasa BCV</span>
                     <input type="number" id="tasa-bcv" placeholder="0.00">
+                    <span class="rate-status" id="status-bcv">●</span>
                 </div>
                 <div class="rate-input-group">
                     <span class="rate-label">Tasa USDT</span>
                     <input type="number" id="tasa-usdt" placeholder="0.00">
+                    <span class="rate-status" id="status-usdt">●</span>
                 </div>
             </div>
         </header>
 
-        <!-- DASHBOARD REORDENADO -->
+        <!-- DASHBOARD - TU DISEÑO ORIGINAL -->
         <section class="summary-panel">
-            <!-- 1. DEUDORES (Izquierda) -->
+            <!-- 1. DEUDORES -->
             <div class="card card-deben">
                 <h3>Deudores</h3>
                 <p id="total-deben">0.00</p>
                 <button id="btn-add-deudor" class="btn-quick">+ Añadir Deudor</button>
             </div>
             
-            <!-- 2. CAPITAL (Centro) -->
+            <!-- 2. CAPITAL -->
             <div class="card card-libres">
                 <h3>Capital</h3>
                 <p id="total-libres">0.00</p>
             </div>
 
-            <!-- 3. DEUDAS (Derecha) -->
+            <!-- 3. DEUDAS -->
             <div class="card card-debo">
                 <h3>Deudas</h3>
                 <p id="total-debo">0.00</p>
@@ -60,7 +62,7 @@
             </div>
         </section>
 
-        <!-- Botones Principales -->
+        <!-- Botones - TU DISEÑO ORIGINAL -->
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
             <div class="action-bar-row">
@@ -70,7 +72,7 @@
             </div>
         </div>
 
-        <!-- Sección de Listas -->
+        <!-- Sección de Listas - TU DISEÑO ORIGINAL -->
         <div id="details-section" style="display:none; margin-top: 20px;">
             <div class="lists-container">
                 <div class="list-column">
@@ -84,13 +86,13 @@
             </div>
         </div>
 
-        <!-- Sección de Historial -->
+        <!-- Sección de Historial - TU DISEÑO ORIGINAL -->
         <div id="historial-section" style="display:none; margin-top:20px;">
             <h2 class="list-title">Historial Reciente</h2>
             <ul id="lista-historial" class="item-list"></ul>
         </div>
 
-        <!-- Sección de Ganancias -->
+        <!-- Sección de Ganancias - TU DISEÑO ORIGINAL -->
         <div id="ganancias-section" style="display:none; margin-top:20px;">
             <div class="ganancias-header">
                 <h3>Ganancia Semanal</h3>
@@ -111,7 +113,7 @@
 
     </div>
 
-    <!-- MODAL 1: REGISTRAR MOVIMIENTO COMPLEJO -->
+    <!-- MODAL 1: REGISTRAR MOVIMIENTO - TU DISEÑO ORIGINAL -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
             <h2>Movimiento</h2>
@@ -134,7 +136,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: AÑADIR RAPIDO (Deudor o Deuda) -->
+    <!-- MODAL 2: AÑADIR RAPIDO - TU DISEÑO ORIGINAL -->
     <div id="modal-quick" class="modal">
         <div class="modal-content">
             <h2 id="quick-title">Añadir</h2>
@@ -152,6 +154,6 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>
