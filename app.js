@@ -43,31 +43,26 @@ document.getElementById('btn-login').onclick = async () => {
 document.getElementById('btn-logout').onclick = async () => { await db.auth.signOut(); location.reload(); };
 
 async function mostrarApp() {
+    // 1. Mostrar la pantalla de la app
     loginScreen.style.display = 'none';
     appScreen.style.display = 'block';
     
-    globalUserId = (await db.auth.getUser()).data.user.id;
-    const { data: tasas } = await db.from('tasas_cambio').select('*').limit(1);
+    // 2. Cargar tasas desde Supabase (esperamos a que lleguen antes de continuar)
+    const { data: tasas, error } = await db.from('tasas_cambio').select('*').limit(1).single();
     
-    if(tasas && tasas.length > 0) {
-        inputTasaBcv.value = tasas[0].tasa_bcv;
-        inputTasaUsdt.value = tasas[0].tasa_usdt;
+    if(tasas) {
+        inputTasaBcv.value = tasas.tasa_bcv;
+        inputTasaUsdt.value = tasas.tasa_usdt;
     } else {
-        await db.from('tasas_cambio').insert([{ id: 1, tasa_bcv: 1, tasa_usdt: 1, user_id: globalUserId }]);
-        inputTasaBcv.value = 1; inputTasaUsdt.value = 1;
+        // Si no existen, inicializamos con 1
+        inputTasaBcv.value = 1;
+        inputTasaUsdt.value = 1;
     }
     
+    // 3. Ahora que tenemos las tasas, cargamos el resto
     cargarDatos();
     cargarHistorial();
     cargarGanancias();
-}
-
-async function guardarTasas() {
-    await db.from('tasas_cambio').update({ 
-        tasa_bcv: parseFloat(inputTasaBcv.value)||1, 
-        tasa_usdt: parseFloat(inputTasaUsdt.value)||1 
-    }).eq('id', 1);
-    cargarDatos();
 }
 inputTasaBcv.addEventListener('change', guardarTasas);
 inputTasaUsdt.addEventListener('change', guardarTasas);
