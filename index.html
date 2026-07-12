@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaproyects3d | Finanzas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -14,10 +14,10 @@
         <h2>Acceso Privado</h2>
         <input type="email" id="email" placeholder="Correo">
         <input type="password" id="password" placeholder="Contraseña">
-        <button id="btn-login">Entrar</button>
+        <button id="btn-login" class="btn-main">Entrar</button>
     </div>
 
-    <!-- App Principal (Oculta hasta iniciar sesión) -->
+    <!-- App Principal -->
     <div id="app-screen" style="display: none;">
         
         <header class="header">
@@ -37,18 +37,26 @@
             </div>
         </header>
 
+        <!-- DASHBOARD REORDENADO -->
         <section class="summary-panel">
+            <!-- 1. DEUDORES (Izquierda) -->
             <div class="card card-deben">
-                <h3>Me Deben</h3>
+                <h3>Deudores</h3>
                 <p id="total-deben">0.00</p>
+                <button id="btn-add-deudor" class="btn-quick">+ Añadir Deudor</button>
             </div>
-            <div class="card card-debo">
-                <h3>Debo</h3>
-                <p id="total-debo">0.00</p>
-            </div>
+            
+            <!-- 2. CAPITAL (Centro) -->
             <div class="card card-libres">
                 <h3>Capital</h3>
                 <p id="total-libres">0.00</p>
+            </div>
+
+            <!-- 3. DEUDAS (Derecha) -->
+            <div class="card card-debo">
+                <h3>Deudas</h3>
+                <p id="total-debo">0.00</p>
+                <button id="btn-add-deuda" class="btn-quick">+ Añadir Deuda</button>
             </div>
         </section>
 
@@ -56,20 +64,21 @@
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
             <div class="action-bar-row">
-                <button id="btn-toggle-list" class="btn-sec">Ver Detalles y Listas</button>
-                <button id="btn-toggle-historial" class="btn-sec">Ver Historial</button>
+                <button id="btn-toggle-list" class="btn-sec">Listas</button>
+                <button id="btn-toggle-historial" class="btn-sec">Historial</button>
+                <button id="btn-toggle-ganancias" class="btn-sec" style="border: 1px solid #4db8ff;">Ganancias</button>
             </div>
         </div>
 
-        <!-- Sección de Listas (Lado a lado) -->
-        <div id="details-section" style="display:none;">
+        <!-- Sección de Listas -->
+        <div id="details-section" style="display:none; margin-top: 20px;">
             <div class="lists-container">
                 <div class="list-column">
-                    <h2 class="list-title">Me Deben</h2>
+                    <h2 class="list-title">Deudores</h2>
                     <ul id="lista-deben" class="item-list"></ul>
                 </div>
                 <div class="list-column">
-                    <h2 class="list-title">Debo</h2>
+                    <h2 class="list-title">Deudas</h2>
                     <ul id="lista-debo" class="item-list"></ul>
                 </div>
             </div>
@@ -77,30 +86,68 @@
 
         <!-- Sección de Historial -->
         <div id="historial-section" style="display:none; margin-top:20px;">
-            <h2 style="font-size: 1.2rem; margin-bottom:15px; text-align:center;">Historial Reciente</h2>
+            <h2 class="list-title">Historial Reciente</h2>
             <ul id="lista-historial" class="item-list"></ul>
-            <button id="btn-ver-mas" style="width: 100%; margin-top: 10px; background:#333;">Ver más</button>
         </div>
+
+        <!-- Sección de Ganancias -->
+        <div id="ganancias-section" style="display:none; margin-top:20px;">
+            <div class="ganancias-header">
+                <h3>Ganancia Semanal</h3>
+                <h2 style="color: #4ade80;">$<span id="ganancia-semanal">0.00</span></h2>
+                <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">Total Mes: $<span id="ganancia-mensual">0.00</span></p>
+            </div>
+            <div class="lists-container">
+                <div class="list-column">
+                    <h2 class="list-title">3D ($<span id="total-3d">0.00</span>)</h2>
+                    <ul id="lista-ganancias-3d" class="item-list"></ul>
+                </div>
+                <div class="list-column">
+                    <h2 class="list-title">Bolsas ($<span id="total-bolsas">0.00</span>)</h2>
+                    <ul id="lista-ganancias-bolsas" class="item-list"></ul>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Modal (Ventana Emergente) -->
+    <!-- MODAL 1: REGISTRAR MOVIMIENTO COMPLEJO -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
-            <h2>Nuevo Movimiento</h2>
-            <select id="select-tipo" style="width:100%; padding:10px; margin-bottom:10px;">
+            <h2>Movimiento</h2>
+            
+            <select id="select-tipo" style="width:100%; padding:10px; margin-bottom:15px; background:#2c2c2c; color:white; border:1px solid #444; border-radius:5px;">
                 <option value="GASTO">Gasto Externo</option>
-                <option value="INGRESO">Ingreso</option>
-                <option value="PAGO_DEUDA">Pago de Deuda</option>
+                <option value="INGRESO">Ingreso por Trabajo</option>
+                <option value="PAGO_DEUDA">Pagar Deuda</option>
+                <option value="COBRAR">Cobrar Deuda</option>
             </select>
             
             <div id="campos-dinamicos">
-                <input type="number" id="monto" placeholder="Monto" style="width:100%; padding:10px; margin-bottom:10px;">
-                <input type="text" id="desc" placeholder="Descripción" style="width:100%; padding:10px; margin-bottom:10px;">
+                <!-- Se llenará con JavaScript -->
             </div>
             
-            <div style="display:flex; gap:10px; margin-top: 10px;">
-                <button id="btn-guardar" style="flex:1;">Confirmar</button>
-                <button id="btn-close-modal" style="flex:1; background:#444;">Cancelar</button>
+            <div style="display:flex; gap:10px; margin-top: 15px;">
+                <button id="btn-guardar" class="btn-main" style="flex:1;">Confirmar</button>
+                <button id="btn-close-modal" class="btn-sec" style="flex:1; border:none;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: AÑADIR RAPIDO (Deudor o Deuda) -->
+    <div id="modal-quick" class="modal">
+        <div class="modal-content">
+            <h2 id="quick-title">Añadir</h2>
+            <input type="text" id="quick-desc" placeholder="Descripción (Ej: Francisco, Banco...)" style="width:100%; padding:10px; margin-bottom:10px; background:#2c2c2c; color:white; border:1px solid #444; border-radius:5px;">
+            <input type="number" id="quick-monto" placeholder="Monto" style="width:100%; padding:10px; margin-bottom:10px; background:#2c2c2c; color:white; border:1px solid #444; border-radius:5px;">
+            <select id="quick-moneda" style="width:100%; padding:10px; margin-bottom:15px; background:#2c2c2c; color:white; border:1px solid #444; border-radius:5px;">
+                <option value="USDT">USDT</option>
+                <option value="BCV">BCV</option>
+            </select>
+            
+            <div style="display:flex; gap:10px;">
+                <button id="btn-quick-guardar" class="btn-main" style="flex:1;">Añadir</button>
+                <button id="btn-quick-cancel" class="btn-sec" style="flex:1; border:none;">Cancelar</button>
             </div>
         </div>
     </div>
