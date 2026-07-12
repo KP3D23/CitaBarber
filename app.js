@@ -6,7 +6,7 @@ const supabaseKey = 'sb_publishable_Eg0bMHVcqHtkBXMuH-lAIA_cTmO99Qw';
 const db = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ==========================================
-// 2. REFERENCIAS
+// 2. REFERENCIAS A ELEMENTOS DE LA PANTALLA
 // ==========================================
 const loginScreen = document.getElementById('login-screen');
 const appScreen = document.getElementById('app-screen');
@@ -43,44 +43,26 @@ document.getElementById('btn-login').onclick = async () => {
 document.getElementById('btn-logout').onclick = async () => { await db.auth.signOut(); location.reload(); };
 
 async function mostrarApp() {
+    // 1. Mostrar la pantalla de la app
     loginScreen.style.display = 'none';
     appScreen.style.display = 'block';
     
-    // Obtener ID del usuario primero
-    const { data: { user } } = await db.auth.getUser();
-    globalUserId = user.id;
-    
-    // Cargar tasas desde Supabase filtrando por usuario
-    const { data: tasas } = await db.from('tasas_cambio')
-        .select('*')
-        .eq('user_id', globalUserId)
-        .maybeSingle(); // 'maybeSingle' evita errores si no hay nada
+    // 2. Cargar tasas desde Supabase (esperamos a que lleguen antes de continuar)
+    const { data: tasas, error } = await db.from('tasas_cambio').select('*').limit(1).single();
     
     if(tasas) {
         inputTasaBcv.value = tasas.tasa_bcv;
         inputTasaUsdt.value = tasas.tasa_usdt;
     } else {
+        // Si no existen, inicializamos con 1
         inputTasaBcv.value = 1;
         inputTasaUsdt.value = 1;
     }
     
-    // Cargar datos tras asegurar las tasas
+    // 3. Ahora que tenemos las tasas, cargamos el resto
     cargarDatos();
     cargarHistorial();
     cargarGanancias();
-}
-
-async function guardarTasas() {
-    const bcv = parseFloat(inputTasaBcv.value) || 1;
-    const usdt = parseFloat(inputTasaUsdt.value) || 1;
-    
-    // Upsert para guardar o actualizar
-    const { error } = await db.from('tasas_cambio').upsert([
-        { id: 1, user_id: globalUserId, tasa_bcv: bcv, tasa_usdt: usdt }
-    ], { onConflict: 'id' });
-
-    if (error) console.error("Error guardando tasas:", error);
-    else cargarDatos();
 }
 inputTasaBcv.addEventListener('change', guardarTasas);
 inputTasaUsdt.addEventListener('change', guardarTasas);
@@ -145,6 +127,7 @@ document.getElementById('btn-open-modal').onclick = () => {
 };
 document.getElementById('btn-close-modal').onclick = () => modal.style.display = 'none';
 
+// Cargar listas dinámicas al cambiar de opción
 document.getElementById('select-tipo').addEventListener('change', async (e) => {
     const campos = document.getElementById('campos-dinamicos');
     const tipo = e.target.value;
@@ -152,12 +135,15 @@ document.getElementById('select-tipo').addEventListener('change', async (e) => {
     
     campos.innerHTML = `<p style="color:#aaa;">Cargando cuentas...</p>`;
     
+    // Obtener datos para los menús desplegables
     const { data } = await db.from('finanzas').select('*');
     const deudores = data.filter(d => d.tipo === 'ME_DEBEN' && d.monto > 0);
     const deudas = data.filter(d => d.tipo === 'DEBO' && d.monto > 0);
 
     let optDeudores = deudores.map(d => `<option value="${d.id}">${d.concepto} ($${d.monto} ${d.moneda})</option>`).join('');
     let optDeudas = deudas.map(d => `<option value="${d.id}">${d.concepto} ($${d.monto} ${d.moneda})</option>`).join('');
+    
+    // Opciones para el datalist híbrido (Solo los nombres)
     let opcionesCuentas = deudores.map(d => `<option value="${d.concepto}">`).join('');
 
     if (tipo === 'GASTO') {
@@ -188,24 +174,35 @@ document.getElementById('select-tipo').addEventListener('change', async (e) => {
     } 
     else if (tipo === 'COBRAR') {
         campos.innerHTML = `
-            <select id="origen_id" style="${est}"><option value="">-- ¿Quién te pagó? --</option>${optDeudores}</select>
+            <select id="origen_id" style="${est}">
+                <option value="">-- ¿Quién te pagó? --</option>
+                ${optDeudores}
+            </select>
+            
             <input type="text" id="destino_text" list="cuentas-list" placeholder="¿A dónde va el dinero? (Selecciona o escribe)" style="${est}">
-            <datalist id="cuentas-list">${opcionesCuentas}</datalist>
+            <datalist id="cuentas-list">
+                ${opcionesCuentas}
+            </datalist>
+            
             <input type="number" id="monto" placeholder="Monto transferido" style="${est}">
         `;
     }
 });
 
+// Guardar Movimiento Complejo
 document.getElementById('btn-guardar').onclick = async () => {
     const tipo = document.getElementById('select-tipo').value;
+    
     try {
         if (tipo === 'GASTO') {
             const id = document.getElementById('origen_id').value;
             const monto = parseFloat(document.getElementById('monto').value);
             const desc = document.getElementById('desc').value;
             if(!id || !monto) return alert("Llena todos los campos");
+
             const { data: origen } = await db.from('finanzas').select('monto').eq('id', id).single();
             await db.from('finanzas').update({ monto: origen.monto - monto }).eq('id', id);
+            
             await db.from('historial').insert([{ user_id: globalUserId, tipo_movimiento: tipo, monto_origen: monto, descripcion: desc }]);
         }
         else if (tipo === 'INGRESO') {
@@ -215,6 +212,7 @@ document.getElementById('btn-guardar').onclick = async () => {
             const ganancia = parseFloat(document.getElementById('ganancia').value) || 0;
             const categoria = document.getElementById('categoria').value;
             if (!monto || !desc) return alert("Faltan datos");
+
             await db.from('finanzas').insert([{ user_id: globalUserId, tipo: 'ME_DEBEN', concepto: desc, monto: monto, moneda: moneda }]);
             await db.from('historial').insert([{ user_id: globalUserId, tipo_movimiento: tipo, monto_origen: monto, descripcion: desc, ganancia_limpia: ganancia, categoria_ganancia: categoria }]);
         }
@@ -223,10 +221,12 @@ document.getElementById('btn-guardar').onclick = async () => {
             const destino_id = document.getElementById('destino_id').value;
             const monto = parseFloat(document.getElementById('monto').value);
             if(!origen_id || !destino_id || !monto) return alert("Selecciona origen, destino y monto");
+
             const { data: oData } = await db.from('finanzas').select('monto').eq('id', origen_id).single();
             const { data: dData } = await db.from('finanzas').select('monto').eq('id', destino_id).single();
             await db.from('finanzas').update({ monto: oData.monto - monto }).eq('id', origen_id);
             await db.from('finanzas').update({ monto: dData.monto - monto }).eq('id', destino_id);
+            
             await db.from('historial').insert([{ user_id: globalUserId, tipo_movimiento: tipo, monto_origen: monto, descripcion: `Pago de deuda procesado` }]);
         }
         else if (tipo === 'COBRAR') {
@@ -234,38 +234,57 @@ document.getElementById('btn-guardar').onclick = async () => {
             const destino = document.getElementById('destino_text').value;
             const monto = parseFloat(document.getElementById('monto').value);
             if(!origen_id || !destino || !monto) return alert("Llena todos los campos");
+
+            // 1. Descontar al deudor
             const { data: oData } = await db.from('finanzas').select('monto, moneda').eq('id', origen_id).single();
             await db.from('finanzas').update({ monto: oData.monto - monto }).eq('id', origen_id);
+
+            // 2. Sumar a la cuenta existente o crear una nueva
             const { data: exist } = await db.from('finanzas').select('*').eq('tipo', 'ME_DEBEN').ilike('concepto', destino);
-            if(exist && exist.length > 0) await db.from('finanzas').update({ monto: exist[0].monto + monto }).eq('id', exist[0].id);
-            else await db.from('finanzas').insert([{ user_id: globalUserId, tipo: 'ME_DEBEN', concepto: destino, monto: monto, moneda: oData.moneda }]);
+            if(exist && exist.length > 0) {
+                await db.from('finanzas').update({ monto: exist[0].monto + monto }).eq('id', exist[0].id);
+            } else {
+                await db.from('finanzas').insert([{ user_id: globalUserId, tipo: 'ME_DEBEN', concepto: destino, monto: monto, moneda: oData.moneda }]);
+            }
             await db.from('historial').insert([{ user_id: globalUserId, tipo_movimiento: tipo, monto_origen: monto, descripcion: `Cobro depositado en ${destino}` }]);
         }
+
         modal.style.display = 'none';
-        cargarDatos(); cargarHistorial(); cargarGanancias();
-    } catch(err) { alert("Error procesando: " + err.message); }
+        cargarDatos();
+        cargarHistorial();
+        cargarGanancias();
+    } catch(err) {
+        alert("Error procesando: " + err.message);
+    }
 };
 
 // ==========================================
-// 7. CARGAR SALDOS
+// 7. CARGAR SALDOS Y LISTAS
 // ==========================================
 async function cargarDatos() {
     const { data } = await db.from('finanzas').select('*');
     if(!data) return;
+
     const listaDeben = document.getElementById('lista-deben');
     const listaDebo = document.getElementById('lista-debo');
     listaDeben.innerHTML = ''; listaDebo.innerHTML = '';
+
     let sumaTotalDeben = 0; let sumaTotalDebo = 0;
     const tBcv = parseFloat(inputTasaBcv.value)||1; const tUsdt = parseFloat(inputTasaUsdt.value)||1;
+
     data.forEach(item => {
         if(item.monto <= 0) return;
+
         let valorCv = parseFloat(item.monto);
         if (item.moneda === 'USDT') valorCv = (valorCv * tUsdt) / tBcv;
+
         const li = document.createElement('li');
         li.innerHTML = `<div class="item-info"><span class="item-concepto">${item.concepto}</span><span class="badge ${item.moneda==='USDT'?'badge-usdt':'badge-bcv'}">${item.moneda}</span></div><div class="item-monto-container"><span class="monto-original">Orig: $${parseFloat(item.monto).toFixed(2)} ${item.moneda}</span><span class="monto-convertido">Eq: $${valorCv.toFixed(2)}</span></div>`;
+
         if (item.tipo === 'ME_DEBEN') { sumaTotalDeben += valorCv; listaDeben.appendChild(li); } 
         else { sumaTotalDebo += valorCv; listaDebo.appendChild(li); }
     });
+
     document.getElementById('total-deben').innerText = sumaTotalDeben.toFixed(2);
     document.getElementById('total-debo').innerText = sumaTotalDebo.toFixed(2);
     document.getElementById('total-libres').innerText = (sumaTotalDeben - sumaTotalDebo).toFixed(2);
@@ -279,11 +298,13 @@ async function cargarHistorial() {
     const lista = document.getElementById('lista-historial');
     lista.innerHTML = '';
     if(!data) return;
+
     data.forEach(item => {
         let color = "#fff"; let ic = "▪";
         if(item.tipo_movimiento==='INGRESO'){ color="#4ade80"; ic="▲"; }
         if(item.tipo_movimiento==='GASTO'){ color="#f87171"; ic="▼"; }
         if(item.tipo_movimiento==='PAGO_DEUDA'||item.tipo_movimiento==='COBRAR'){ color="#4db8ff"; ic="⇆"; }
+        
         const li = document.createElement('li');
         li.innerHTML = `<div style="display:flex; flex-direction:column; gap:5px;"><span style="color:${color}; font-weight:bold;">${ic} ${item.tipo_movimiento}</span><span style="font-size:0.85rem; color:#ccc;">${item.descripcion}</span></div><div style="font-weight:bold; font-size:1.1rem;">$${parseFloat(item.monto_origen).toFixed(2)}</div>`;
         lista.appendChild(li);
@@ -293,21 +314,47 @@ async function cargarHistorial() {
 async function cargarGanancias() {
     const { data } = await db.from('historial').select('*').eq('tipo_movimiento', 'INGRESO').gt('ganancia_limpia', 0);
     if(!data) return;
+
     let gSem = 0, gMes = 0, t3D = 0, tBol = 0;
-    const now = new Date(); const firstDay = new Date(); firstDay.setDate(now.getDate() - now.getDay()); firstDay.setHours(0,0,0,0);
+    
+    // Obtener fecha actual sin hora para comparar
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    
+    // Calcular el inicio de la semana (domingo)
+    const firstDayOfWeek = new Date();
+    firstDayOfWeek.setDate(now.getDate() - now.getDay());
+    firstDayOfWeek.setHours(0,0,0,0);
+
     const l3D = document.getElementById('lista-ganancias-3d'); l3D.innerHTML = '';
     const lBol = document.getElementById('lista-ganancias-bolsas'); lBol.innerHTML = '';
+
     data.forEach(item => {
+        // CORRECCIÓN: Intentar parsear la fecha de forma segura
+        // Si created_at falla, usamos el ID o el momento actual como fallback
         const fecha = item.created_at ? new Date(item.created_at) : new Date();
         const g = parseFloat(item.ganancia_limpia);
-        if (fecha.getMonth() === now.getMonth() && fecha.getFullYear() === now.getFullYear()) gMes += g;
-        if (fecha >= firstDay) gSem += g;
+        
+        // Sumar si es de este mes
+        if (fecha.getMonth() === currentMonth && fecha.getFullYear() === currentYear) {
+            gMes += g;
+        }
+        // Sumar si es de esta semana (comparando fecha procesada)
+        if (fecha >= firstDayOfWeek) {
+            gSem += g;
+        }
+
         const li = document.createElement('li');
-        const fStr = !isNaN(fecha) ? fecha.toLocaleDateString() : "";
-        li.innerHTML = `<div class="item-info"><span class="item-concepto">${item.descripcion}</span><span class="badge" style="background:#333;">${fStr}</span></div><div class="item-monto-container"><span class="monto-convertido" style="color:#4ade80;">+$${g.toFixed(2)}</span></div>`;
+        // Mostrar fecha formateada de forma segura
+        const fechaStr = !isNaN(fecha) ? fecha.toLocaleDateString() : "Fecha N/A";
+        
+        li.innerHTML = `<div class="item-info"><span class="item-concepto">${item.descripcion}</span><span class="badge" style="background:#333;">${fechaStr}</span></div><div class="item-monto-container"><span class="monto-convertido" style="color:#4ade80;">+$${g.toFixed(2)}</span></div>`;
+        
         if(item.categoria_ganancia === '3D') { t3D+=g; l3D.appendChild(li); }
         else if (item.categoria_ganancia === 'Bolsas') { tBol+=g; lBol.appendChild(li); }
     });
+
     document.getElementById('ganancia-semanal').innerText = gSem.toFixed(2);
     document.getElementById('ganancia-mensual').innerText = gMes.toFixed(2);
     document.getElementById('total-3d').innerText = t3D.toFixed(2);
