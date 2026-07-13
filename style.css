@@ -244,16 +244,3 @@ button#btn-logout:hover { background: #ef4444; }
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
 }
-
-/* =========================================
-   EFECTO INTERACTIVO TARJETA CAPITAL
-========================================= */
-#card-capital {
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease;
-}
-#card-capital:hover {
-    transform: scale(1.05);
-    border-color: #facc15;
-    box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
-}
