@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kawaproyects3d | Finanzas</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -17,7 +17,7 @@
         <button id="btn-login" class="btn-main">Entrar</button>
     </div>
 
-    <!-- App Principal - TU DISEÑO ORIGINAL -->
+    <!-- App Principal -->
     <div id="app-screen" style="display: none;">
         
         <header class="header">
@@ -39,22 +39,20 @@
             </div>
         </header>
 
-        <!-- DASHBOARD - TU DISEÑO ORIGINAL -->
+        <!-- DASHBOARD -->
         <section class="summary-panel">
-            <!-- 1. DEUDORES -->
             <div class="card card-deben">
                 <h3>Deudores</h3>
                 <p id="total-deben">0.00</p>
                 <button id="btn-add-deudor" class="btn-quick">+ Añadir Deudor</button>
             </div>
             
-            <!-- 2. CAPITAL -->
-            <div class="card card-libres">
-                <h3>Capital</h3>
+            <!-- TARJETA CAPITAL (AHORA ES UN BOTÓN INTERACTIVO) -->
+            <div class="card card-libres" id="card-capital" title="Ver Historial de Cierres">
+                <h3>Capital 📸</h3>
                 <p id="total-libres">0.00</p>
             </div>
 
-            <!-- 3. DEUDAS -->
             <div class="card card-debo">
                 <h3>Deudas</h3>
                 <p id="total-debo">0.00</p>
@@ -62,7 +60,7 @@
             </div>
         </section>
 
-        <!-- Botones - TU DISEÑO ORIGINAL -->
+        <!-- Botones Principales -->
         <div class="action-bar">
             <button id="btn-open-modal" class="btn-main">⇆ Registrar Movimiento</button>
             <div class="action-bar-row">
@@ -72,7 +70,6 @@
             </div>
         </div>
 
-        <!-- Sección de Listas - TU DISEÑO ORIGINAL -->
         <div id="details-section" style="display:none; margin-top: 20px;">
             <div class="lists-container">
                 <div class="list-column">
@@ -86,13 +83,11 @@
             </div>
         </div>
 
-        <!-- Sección de Historial - TU DISEÑO ORIGINAL -->
         <div id="historial-section" style="display:none; margin-top:20px;">
             <h2 class="list-title">Historial Reciente</h2>
             <ul id="lista-historial" class="item-list"></ul>
         </div>
 
-        <!-- Sección de Ganancias - TU DISEÑO ORIGINAL -->
         <div id="ganancias-section" style="display:none; margin-top:20px;">
             <div class="ganancias-header">
                 <h3>Ganancia Semanal</h3>
@@ -113,22 +108,17 @@
 
     </div>
 
-    <!-- MODAL 1: REGISTRAR MOVIMIENTO - TU DISEÑO ORIGINAL -->
+    <!-- MODAL 1: REGISTRAR MOVIMIENTO -->
     <div id="modal-movimiento" class="modal">
         <div class="modal-content">
             <h2>Movimiento</h2>
-            
             <select id="select-tipo" style="width:100%; padding:10px; margin-bottom:15px; background:#2c2c2c; color:white; border:1px solid #444; border-radius:5px;">
                 <option value="GASTO">Gasto Externo</option>
                 <option value="INGRESO">Ingreso por Trabajo</option>
                 <option value="PAGO_DEUDA">Pagar Deuda</option>
                 <option value="COBRAR">Cobrar Deuda</option>
             </select>
-            
-            <div id="campos-dinamicos">
-                <!-- Se llenará con JavaScript -->
-            </div>
-            
+            <div id="campos-dinamicos"></div>
             <div style="display:flex; gap:10px; margin-top: 15px;">
                 <button id="btn-guardar" class="btn-main" style="flex:1;">Confirmar</button>
                 <button id="btn-close-modal" class="btn-sec" style="flex:1; border:none;">Cancelar</button>
@@ -136,7 +126,7 @@
         </div>
     </div>
 
-    <!-- MODAL 2: AÑADIR RAPIDO - TU DISEÑO ORIGINAL -->
+    <!-- MODAL 2: AÑADIR RAPIDO -->
     <div id="modal-quick" class="modal">
         <div class="modal-content">
             <h2 id="quick-title">Añadir</h2>
@@ -146,7 +136,6 @@
                 <option value="USDT">USDT</option>
                 <option value="BCV">BCV</option>
             </select>
-            
             <div style="display:flex; gap:10px;">
                 <button id="btn-quick-guardar" class="btn-main" style="flex:1;">Añadir</button>
                 <button id="btn-quick-cancel" class="btn-sec" style="flex:1; border:none;">Cancelar</button>
@@ -154,6 +143,20 @@
         </div>
     </div>
 
-    <script src="app.js?v=5"></script>
+    <!-- MODAL 3: CIERRES DE CAPITAL (NUEVO) -->
+    <div id="modal-cierres" class="modal">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Historial de Capital</h2>
+                <button id="btn-close-cierres" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <button id="btn-hacer-cierre" class="btn-main" style="margin-bottom: 15px; background: #facc15; color: #121212;">📸 Guardar Cierre Actual</button>
+            <ul id="lista-cierres" class="item-list">
+                <!-- Se llena con JS -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js?v=6"></script>
 </body>
 </html>
